@@ -1,0 +1,3334 @@
+[
+  {
+    "name": "Accounting",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Acting",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Administration",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Ages Of The Etharch",
+    "root1": "will",
+    "root2": "perception",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Alchemy",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Almanac",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Althing-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Ambition-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Amercement",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Ancestral Jaw",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Ancient Languages",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Ancient Ways",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Anatomy",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Animal Husbandry",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Antiphon Union Training",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Apothecary",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Appraisal",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Archcraft",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Architect",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Armor Training",
+    "root1": "power",
+    "root2": "speed",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Armorer",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Army-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Arson",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Artificer-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Artillerist",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Artillery Hand",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Astrology",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Atilliator",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Aura Reading",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Axe",
+    "root1": "power",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Back Alley-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Bad End-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Baking",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Ballad Of History",
+    "root1": "perception",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Banner-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Bannerman-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Bat-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Bastions Of Hatred",
+    "root1": "hatred",
+    "root2": "",
+    "open": false,
+    "restrictions": "Orcs only"
+  },
+  {
+    "name": "Beer Appraisal",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Beer-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Begging",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Bird Husbandry",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Black Legion-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": "Orcs only"
+  },
+  {
+    "name": "Black Metal Artifice",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Blacksmith",
+    "root1": "agility",
+    "root2": "power",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Bloodletting",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Boatwright",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Bow",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Bowcraft",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Bowyer",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Boxing (Martial Arts)",
+    "root1": "power",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Brawling",
+    "root1": "power",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Brazen Horn Of Despair",
+    "root1": "hatred",
+    "root2": "",
+    "open": false,
+    "restrictions": "Orcs only"
+  },
+  {
+    "name": "Brewer",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Bribe-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Brutal Intimidation",
+    "root1": "hatred",
+    "root2": "",
+    "open": false,
+    "restrictions": "Orcs only"
+  },
+  {
+    "name": "Burden Of The Crown-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Bureaucracy",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Butchery",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Cadence-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Call Of The Wild",
+    "root1": "perception",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Calligraphy",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Campaign-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Cargo-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Carpentry",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Cartography",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Cartwright",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Carving",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Cave-in-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Cave-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Champion-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Chandler",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Chattel-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Cheating-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Child Rearing",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Chronology Of Kings",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Church Law",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Citadel-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "City-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Clan History",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Clan-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Climbing",
+    "root1": "speed",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Cloth Dyeing",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Coarse Persuasion",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Cobbler",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Code Of Citadels",
+    "root1": "will",
+    "root2": "perception",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Command",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Composition",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Conspicuous",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Contract-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Cooking",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Cooper",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Coppersmith",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Counterfeiting",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Countryside-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Crop-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Crossbow",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Crowd-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Cryptography",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Cudgel",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Daily Bread-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Dance",
+    "root1": "speed",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Darkened Street-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Darkness-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Demonology",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Digging",
+    "root1": "power",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Dignity Of The Wilderlands",
+    "root1": "will",
+    "root2": "perception",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Disguise",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Ditch Digging",
+    "root1": "power",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Doctrine",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Doctrine Of Night's Blood",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": "Orcs only"
+  },
+  {
+    "name": "Drama-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Drinking",
+    "root1": "forte",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Driving",
+    "root1": "will",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Drum Maker",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Drunkard-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Drunking",
+    "root1": "will",
+    "root2": "forte",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Dwarf-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Dwarven Art-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Dwarven Heroes-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Dwarven Rune Script",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Dye Manufacture",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Earth-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Elf-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Elven Artifact-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Elven Art-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Elven Blade-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Elven Citadel-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Elven Ranger-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Elven Script",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Embroidery",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Empyrealia",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Enchanting",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Engineering",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Engraving",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Escape Artist",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Estate Management",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Estate-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Etching",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Etharch-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Etiquette",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Everybody's Innocent-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Excavation",
+    "root1": "perception",
+    "root2": "power",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Extortion",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Faith-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Falconry",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Falsehood",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Family-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Family Secret-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Farming",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Fealty-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Fence Building",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Field Dressing",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Fire And Steel-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Firearms",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Firebombs",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Firebuilding",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Fishing",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Fletcher",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Flock-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Folklore",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Foraging",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Foreign Languages",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Forest-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Forge Artifice",
+    "root1": "will",
+    "root2": "perception",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Forgery",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Formation Fighting",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Fortifications",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Gambling",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Games Of Chance",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Garrote",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Gas Pocket-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Gem Artifice",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Gemcraft",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Genius-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Gossip-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Grain Appraisal",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Grain Song",
+    "root1": "perception",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Grain-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Grandfather's Song",
+    "root1": "ancestral taint",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Graybeard-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Great And Black-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Great Masters-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Great Wolf Husbandry",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Grift-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Guilder-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Haggling",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Hallmaster",
+    "root1": "will",
+    "root2": "perception",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Hammer",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Handwriting-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Hatchet-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Hauling",
+    "root1": "will",
+    "root2": "power",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Heraldry",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Herbalism",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Hills-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "History",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Hold-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Hoof-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Host-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Howling",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Hunting",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Hymn Of Scales And Fins",
+    "root1": "perception",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Illuminations",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Imperfections-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Inconspicuous",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Infection-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Insect Husbandry",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Instruction",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Interrogation",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Intimidation",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Intrigue-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Jargon",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Javelin",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Jewelcraft",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Jeweler",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Khirurgy",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Kingdom-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Knives",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Knots",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Lance",
+    "root1": "agility",
+    "root2": "power",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Lapidary",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Leathercraft",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Ledger-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Leverage-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Links",
+    "root1": "will",
+    "root2": "forte",
+    "open": false,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Lithography",
+    "root1": "perception",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Lock Pick",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Locksmith",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Logistics",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Lost Treasures-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Lyric Of Law",
+    "root1": "perception",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Mace",
+    "root1": "power",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Maker's Mark-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Man-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Mason",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Martial Arts",
+    "root1": "power",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Meditation",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Mending",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Mercenary Company-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Metal-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Midwifery",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Mill-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Miller",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Mimicry",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Mining",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Monk-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Mounted Combat Training",
+    "root1": "will",
+    "root2": "power",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Mounted Combat: Bowman Training",
+    "root1": "will",
+    "root2": "power",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Mouth Of Hell-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Mule-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Munitions",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Music Composition",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Musical Instrument",
+    "root1": "will",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Mystery Meat-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Name Ritual",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": "Orcs only"
+  },
+  {
+    "name": "Nature Of All Things",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Navigation",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Nogger",
+    "root1": "will",
+    "root2": "perception",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Nursing",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Oath-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Obligation-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Obscure Text-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Observation",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Oratory",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Orc-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Ore-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Orienteering",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Pack Etiquette",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Paean Of Deeds",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Painting",
+    "root1": "will",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Pattern-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Personal Effects-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Persuasion",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Philosophy",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Pilgrimage-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Pilot",
+    "root1": "perception",
+    "root2": "power",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Playwright",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Plumbing",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Poetry",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Poison-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Poisonous Platitudes",
+    "root1": "hatred",
+    "root2": "",
+    "open": false,
+    "restrictions": "Orcs only"
+  },
+  {
+    "name": "Poisons",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Polearm",
+    "root1": "power",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Potter",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Primal Bark",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Prospecting",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Purple Song",
+    "root1": "perception",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Ratiquette",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Read",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Rearing",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Reason Of Old Stone",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Religious Diatribe",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Reputation-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Research",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Rhetoric",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Rhyme Of The Gatherer",
+    "root1": "perception",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Rhyme Of The Mariner",
+    "root1": "agility",
+    "root2": "speed",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Rhyme Of The Pathfinder",
+    "root1": "perception",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Rhythm Of The City-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Riddle Of Steel",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Rediculous Request-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Riding",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Rigging",
+    "root1": "agility",
+    "root2": "speed",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Ritual",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Rituals Of Blood",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": "Orcs only"
+  },
+  {
+    "name": "Rituals Of Night",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": "Orcs only"
+  },
+  {
+    "name": "Rituals-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Road-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Rope Chant",
+    "root1": "agility",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Round Of Harvest",
+    "root1": "perception",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Royal Secret-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Rude Carpentry",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": "Orcs only"
+  },
+  {
+    "name": "Rule Of Law",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Rumour-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Rune Casting",
+    "root1": "will",
+    "root2": "perception",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Saddlery",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Saint-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Savage Attack",
+    "root1": "agility",
+    "root2": "speed",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Scavenging",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Sculpture",
+    "root1": "will",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Scutwork-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Seamanship",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Seduction",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Servant-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Sewing",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Shield Training",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Ship Management",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Ship-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Shipwright",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Shortcut-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Shrewd Appraisal",
+    "root1": "perception",
+    "root2": "",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Siege Engineer",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Signaling",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Silent Fury",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Silver Trumpet",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Sing",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Skirmish Tactics",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Slave Deck-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Sleight Of Hand",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Slip Of Currents",
+    "root1": "perception",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Smithcraft",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Soldiering",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Song Of The Eldar",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Song Of Feasting",
+    "root1": "perception",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Song Of Flocks And Herds",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Song Of Form",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Song Of Lordship",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Song Of Paths And Ways",
+    "root1": "perception",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Song Of Soothing",
+    "root1": "will",
+    "root2": "perception",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Soothing Platitudes",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Sorcery",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Sorcery-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Spear",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Spearcraft",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Spider Husbandry",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": "Orcs only"
+  },
+  {
+    "name": "Spirit Binding",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Spiel-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Staff",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Starcraft",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Stealthy",
+    "root1": "speed",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Stentorious Debate",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Stentorious Singing",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Stone Artifice",
+    "root1": "will",
+    "root2": "power",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Stonecraft",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Strategy",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Strategy Games",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Streetwise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Structural Weakness-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Stuff-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Suasion",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Suicidal Bravery-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Summoning",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Supplier-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Supply-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Surgery",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Survival",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Sword",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Symbology",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Tactics",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Tall Grass-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Tanner",
+    "root1": "agility",
+    "root2": "forte",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Taskmaster-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Tavern Tales-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Taxidermy",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Terroir-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Theatrics",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "The Way Of The First Hunter",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Threading Chant",
+    "root1": "perception",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Throwing",
+    "root1": "agility",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Tongue Of The Ancient One",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Torture",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Orcish Torture",
+    "root1": "hatred",
+    "root2": "",
+    "open": false,
+    "restrictions": "Orcs only"
+  },
+  {
+    "name": "Tracking",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Tragic End-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Trails-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Trapper",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Treasure-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Tree Cutting",
+    "root1": "perception",
+    "root2": "power",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Tree Pulling",
+    "root1": "hatred",
+    "root2": "",
+    "open": false,
+    "restrictions": "Orcs only"
+  },
+  {
+    "name": "Troll Etiquette",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Troll-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Tune-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Tunneling",
+    "root1": "power",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Preaching",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Tunnel-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Two-fisted Fighting Training",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Ugly Truth",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Vein-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Vile Poisoner",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": "Orcs only"
+  },
+  {
+    "name": "Village Secret-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Vine-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Vintage-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Vintner",
+    "root1": "will",
+    "root2": "perception",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Visage-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Voice Of Thunder",
+    "root1": "will",
+    "root2": "power",
+    "open": false,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Wagon-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Waiting Tables",
+    "root1": "will",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "War Art",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "War Engineer",
+    "root1": "will",
+    "root2": "perception",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Weaponsmith",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Weaving",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Weaving Way",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Web-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Well-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Whip-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Whispered Secrets-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "White Metal Artifice",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Dwarves only"
+  },
+  {
+    "name": "Whitesmith",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Windage-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Wine Tasting",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Wolf-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Wolfish Hunting",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Wood-wise",
+    "root1": "perception",
+    "root2": "",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Woodcraft",
+    "root1": "will",
+    "root2": "agility",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Write",
+    "root1": "perception",
+    "root2": "agility",
+    "open": false,
+    "restrictions": ""
+  },
+  {
+    "name": "Air Of Gates",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Alarm",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Anthem Of Courage",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Ballad Of Rage",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Canticle Of Years",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Chant Of Offering",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Council Caller",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Discerner",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Doom Of Strength",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Doom Sayer",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Evensong",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Gift Of Speed",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Hymn Of Victory",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Homesong",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Lament For The Fallen",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Lament Of Mourning",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Lament Of Stars",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Lament Of The Westering Sun",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Lay Of The Horse",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Litany Of Responsibilities",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Lyric Of Healing",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Monody Of The March",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Mornsong",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Recitation Of Ages",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Rhyme Of Rules",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Rhyme Of Tongues",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Song Of Arbors",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Song Of Bonding",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Song Of Burning Bright",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Song Of Merriment",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Song Of Silence",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Song Of Songs",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Song Of The Sword",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Strain Of Far Sight",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Supplication To The Wind",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Threne Of The Chameleon",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Tract Of Enmity",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Verse Of Decision",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Verse Of Friendship",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Voice Of Ages",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  },
+  {
+    "name": "Weathersong",
+    "root1": "will",
+    "root2": "",
+    "open": true,
+    "restrictions": "Elves only"
+  }
+]

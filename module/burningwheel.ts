@@ -32,6 +32,8 @@ Hooks.once("init", async () => {
     
     RegisterItemSheets();
 
+    this.
+
     registerSystemSettings();
     preloadHandlebarsTemplates();
     registerHelpers();
