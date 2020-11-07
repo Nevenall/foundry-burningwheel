@@ -20,4 +20,11 @@ export function registerSystemSettings(): void {
         type: String,
         default: "{}"
     });
+    game.settings.register("burningwheel", "rnc-data", {
+        name: "Serialized Range and Cover dialog data.",
+        scope: "world",
+        config: false,
+        type: String,
+        default: "{}"
+    });
 }
