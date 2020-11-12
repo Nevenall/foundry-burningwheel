@@ -69,6 +69,7 @@ export async function handleNpcSpellRoll({ actor, spell, skill, dataPreset}: Npc
     } else {
         dataPreset = { difficulty: obstacle };
     }
+    dataPreset.useCustomDifficulty = dataPreset.showObstacles = dataPreset.showDifficulty = true;
     const extraInfo = Spell.GetSpellMessageData(spell);
     return handleNpcSkillRoll({actor, skill, extraInfo, dataPreset});
 }
@@ -140,7 +141,11 @@ export async function handleNpcSkillRoll({ actor, skill, extraInfo, dataPreset}:
         forkOptions: actor.getForkOptions(skill.data.name).sort(byName),
         wildForks: actor.getWildForks(skill.data.name).sort(byName),
         optionalDiceModifiers: rollModifiers.filter(r => r.optional && r.dice),
-        optionalObModifiers: rollModifiers.filter(r => r.optional && r.obstacle)
+        optionalObModifiers: rollModifiers.filter(r => r.optional && r.obstacle),
+        showDifficulty: !game.burningwheel.useGmDifficulty,
+        showObstacles: !game.burningwheel.useGmDifficulty
+            || !!actor.data.data.ptgs.obPenalty
+            || ((dataPreset && dataPreset.obModifiers && !!dataPreset.obModifiers.length) || false)
     }, dataPreset);
 
     const html = await renderTemplate(templates.npcRollDialog, data);

@@ -6,13 +6,14 @@ import {
 } from "./items/item.js";
 
 import { hideChatButtonsIfNotOwner, onChatLogRender } from "./chat.js";
-import { slugify } from "./helpers.js";
+import { ShadeString, slugify, translateWoundValue } from "./helpers.js";
 import { migrateData } from "./migration.js";
 import { registerSystemSettings } from "./settings.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { NpcSheet } from "./npc-sheet.js";
 import { DuelOfWitsDialog } from "./dialogs/duel-of-wits.js";
 import { FightDialog } from "./dialogs/fight.js";
+import { DifficultyDialog } from "./dialogs/difficultyDialog.js";
 
 Hooks.once("init", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -67,6 +68,12 @@ Hooks.once("init", async () => {
 
 Hooks.once("ready", async() => {
     migrateData();
+    game.burningwheel.useGmDifficulty = await game.settings.get("burningwheel", "useGmDifficulty");
+    if (game.burningwheel.useGmDifficulty) {
+        const difficulty = await game.settings.get("burningwheel", "gmDifficulty");
+        game.burningwheel.gmDifficulty = new DifficultyDialog(difficulty);
+        game.burningwheel.gmDifficulty.render(true);
+    }
 });
 
 Hooks.on("renderSidebarTab", async (_data, html: JQuery) => {
@@ -160,6 +167,10 @@ function registerHelpers() {
 
     Handlebars.registerHelper("sub", (a: string, b: string): number => {
         return parseInt(a) - parseInt(b);
+    });
+
+    Handlebars.registerHelper("clampWound", (shade: ShadeString, value: string | number): string => {
+        return translateWoundValue(shade, value);
     });
 }
 
