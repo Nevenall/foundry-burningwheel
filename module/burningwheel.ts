@@ -11,9 +11,10 @@ import { migrateData } from "./migration.js";
 import { registerSystemSettings } from "./settings.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
 import { NpcSheet } from "./npc-sheet.js";
-import { DuelOfWitsDialog } from "./dialogs/duel-of-wits.js";
+import { DuelOfWitsDialog } from "./dialogs/duelOfWits.js";
 import { FightDialog } from "./dialogs/fight.js";
 import { DifficultyDialog } from "./dialogs/difficultyDialog.js";
+import { RangeAndCoverDialog } from "./dialogs/rangeAndCover.js";
 
 Hooks.once("init", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,11 +42,23 @@ Hooks.once("init", async () => {
 
     let dowData = {};
     let fightData = {};
+    let rncData = {};
     try {
         dowData = await JSON.parse(game.settings.get("burningwheel", "dow-data"));
+    } catch (err) {
+        ui.notifications.warn("Error parsing serialized Duel of Wits data");
+        console.log(err);
+    }
+    try {
         fightData = await JSON.parse(game.settings.get("burningwheel", "fight-data"));
     } catch (err) {
-        console.log("Error parsing serialized duel of wits / fight data");
+        ui.notifications.warn("Error parsing serialized Fight data");
+        console.log(err);
+    }
+    try {
+        rncData = await JSON.parse(game.settings.get("burningwheel", "rnc-data"));
+    } catch (err) {
+        ui.notifications.warn("Error parsing serialized Range and Cover data");
         console.log(err);
     }
     
@@ -64,6 +77,14 @@ Hooks.once("init", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
     game.burningwheel.fight.activateSocketListeners();
+
+    game.burningwheel.rangeAndCover = new RangeAndCoverDialog({
+        title: "Fight!",
+        buttons: {},
+        data: rncData
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any);
+    game.burningwheel.rangeAndCover.activateSocketListeners();
 });
 
 Hooks.once("ready", async() => {
@@ -80,6 +101,7 @@ Hooks.on("renderSidebarTab", async (_data, html: JQuery) => {
     if (html.prop("id") === "combat") { // this is the combat tab
         DuelOfWitsDialog.addSidebarControl(html);
         FightDialog.addSidebarControl(html);
+        RangeAndCoverDialog.addSidebarControl(html);
     }
 });
 

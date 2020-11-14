@@ -8,21 +8,21 @@ import {
     RollChatMessageData,
     rollDice,
     templates,
-    extractRollData, EventHandlerOptions
+    extractRollData, EventHandlerOptions, mergeDialogData
 } from "./rolls.js";
 
-export async function handleShrugRollEvent({ target, sheet }: EventHandlerOptions): Promise<unknown> {
-    return handlePtgsRoll({ target, sheet, shrugging: true });
+export async function handleShrugRollEvent({ target, sheet, dataPreset}: EventHandlerOptions): Promise<unknown> {
+    return handlePtgsRoll({ target, sheet, shrugging: true, dataPreset  });
 }
-export async function handleGritRollEvent({ target, sheet }: EventHandlerOptions): Promise<unknown> {
-    return handlePtgsRoll({ target, sheet, shrugging: false });
+export async function handleGritRollEvent({ target, sheet, dataPreset }: EventHandlerOptions): Promise<unknown> {
+    return handlePtgsRoll({ target, sheet, shrugging: false, dataPreset });
 }
 
-async function handlePtgsRoll({ sheet, shrugging }: PtgsRollOptions): Promise<unknown> {
+async function handlePtgsRoll({ sheet, shrugging, dataPreset }: PtgsRollOptions): Promise<unknown> {
     const actor = sheet.actor as BWActor;
     const stat = getProperty(actor.data, "data.health") as Ability;
     const rollModifiers = sheet.actor.getRollModifiers("health");
-    const data: AttributeDialogData = {
+    const data: AttributeDialogData = mergeDialogData<AttributeDialogData>({
         name: shrugging ? "Shrug It Off Health" : "Grit Your Teeth Health",
         difficulty: shrugging ? 2 : 4,
         bonusDice: 0,
@@ -30,9 +30,10 @@ async function handlePtgsRoll({ sheet, shrugging }: PtgsRollOptions): Promise<un
         stat,
         optionalDiceModifiers: rollModifiers.filter(r => r.optional && r.dice),
         optionalObModifiers: rollModifiers.filter(r => r.optional && r.obstacle),
-        showDifficulty: !game.burningwheel.useGmDifficulty,
-        showObstacles: !game.burningwheel.useGmDifficulty
-    };
+        showDifficulty: true,
+        showObstacles: true,
+        useCustomDifficulty: true
+    }, dataPreset) ;
 
     const buttons: Record<string, DialogButton> = {};
     buttons.roll = {
@@ -88,7 +89,7 @@ async function ptgsRollCallback(
         stat: Ability,
         sheet: BWActorSheet,
         shrugging: boolean) {
-    const { diceTotal, baseDifficulty, difficultyTotal, difficultyGroup, dieSources, obSources } = extractRollData(dialogHtml);
+    const { diceTotal, baseDifficulty, difficultyTotal, difficultyGroup, dieSources, obSources, skipAdvancement } = extractRollData(dialogHtml);
 
     const roll = await rollDice(diceTotal, stat.open, stat.shade);
     if (!roll) { return; }
@@ -120,7 +121,7 @@ async function ptgsRollCallback(
         updateData[accessor] = true;
         sheet.actor.update(updateData);
     }
-    if (sheet.actor.data.type === "character") {
+    if (sheet.actor.data.type === "character" && !skipAdvancement) {
         (sheet.actor as BWActor & BWCharacter).addAttributeTest(stat, "Health", "data.health", difficultyGroup, isSuccessful);
     }
     const messageHtml = await renderTemplate(templates.attrMessage, data);
