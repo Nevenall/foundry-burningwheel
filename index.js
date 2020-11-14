@@ -1,4 +1,3 @@
-// todo - convert charred black skills into templated skills for foundry
 const fs = require('fs').promises;
 
 function restrictions(stock) {
@@ -10,43 +9,95 @@ function restrictions(stock) {
          return 'Orcs only'
       case 'dwarven':
          return 'Dwarves only'
+      case 'wolfish':
+         return 'Great wolves only'
+      case 'roden':
+         return 'Roden only'
       default:
          return ''
    }
 }
 
-// make a new random identifier
-function id(length = 10) {
-   const rnd = () => Math.random().toString(36).substr(2);
-   let id = "";
-   while (id.length < length)
-      id += rnd();
-   return id.substr(0, length);
+function image(stock) {
+
+   switch (stock) {
+      case "elven":
+         return 'modules/game-icons-net/whitetransparent/elf-helmet.svg'
+      case 'orcish':
+         return 'modules/game-icons-net/whitetransparent/orc-head.svg'
+      case 'dwarven':
+         return 'modules/game-icons-net/whitetransparent/dwarf-helmet.svg'
+      case 'wolfish':
+         return 'modules/game-icons-net/whitetransparent/wolf-head.svg'
+      case 'roden':
+         return 'modules/game-icons-net/whitetransparent/rat.svg'
+      case 'trollish':
+         return 'modules/game-icons-net/whitetransparent/troll.svg'
+      case 'mannish':
+         return 'modules/game-icons-net/whitetransparent/crown.svg'
+      default:
+         return ''
+   }
 }
 
 
-(async function main() {
+(async () => {
 
-   let file = await fs.readFile('C:/src/charred-black/src/data/gold/skills.json')
-   let skills = JSON.parse(file)
+   let skillFile = await fs.readFile('C:/src/charred-black/src/data/gold/skills.json')
+   let skills = JSON.parse(skillFile)
 
-   let items = Object.entries(skills).map(([key, value]) => {
-      // console.log(`${key}​—${value}`)
+   let skillItems = Object.entries(skills).map(([key, value]) => {
+
       return {
-         
+
          type: 'skill',
          name: key,
-         root1: value.roots[0].toLowerCase(),
-         root2: value.roots.length == 2 ? value.roots[1].toLowerCase() : '',
-         open: value.magic == 1,
-         restrictions: `${restrictions(value.stock)}`
+         img: `${image(value.stock)}`,
+         data: {
+            root1: value.roots[0].toLowerCase(),
+            root2: value.roots.length == 2 ? value.roots[1].toLowerCase() : '',
+            open: value.magic == 1,
+            restrictions: `${restrictions(value.stock)}`
+         }
+
       }
    })
 
-   await fs.writeFile('skills.json', JSON.stringify(items))
+   await fs.writeFile('skills.json', JSON.stringify(skillItems))
+
+
+   let traitFile = await fs.readFile('C:/src/charred-black/all-traits.json')
+   let traits = JSON.parse(traitFile)
+
+   let traitItems = Object.entries(traits).map(([key, value]) => {
+
+      return {
+         type: 'trait',
+         name: key,
+         img: `${image(value.restrict ? value.restrict[0]:'')}`,
+         // data: {
+         //    pointCost: value.cost,
+         //    traittype: value.type,
+         //    text: value.desc,
+         //    restrictions: `${value.restrict ? value.restrict.join(' '):''}`
+         // }
+
+      }
+   })
+
+   await fs.writeFile('traits.json', JSON.stringify(traitItems))
+
 
 })()
 
-// https://foundryvtt.com/article/compendium/
 
-// maybe make a macro we can run in foundry to do this import
+/* restrictions
+
+mannish
+dwarven
+orcish
+elven
+wolfish
+roden
+trollish
+*/

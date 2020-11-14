@@ -1,0 +1,27 @@
+{
+  "trait": {
+    "pointCost": 1,
+    "name": "",
+    "traittype": "character",
+    "text": "",
+    "collapsed": true,
+    "hasAptitudeModifier": false,
+    "aptitudeModifier": 0,
+    "aptitudeTarget": "",
+    "hasDieModifier": false,
+    "dieModifier": 0,
+    "dieModifierTarget": "",
+    "hasObModifier": false,
+    "obModifierTarget": "",
+    "obModifier": 0,
+    "addsReputation": false,
+    "reputationName": "",
+    "reputationDice": 0,
+    "reputationInfamous": false,
+    "addsAffiliation": false,
+    "affiliationName": "",
+    "affiliationDice": 0,
+    "callonTarget": "",
+    "restrictions": ""
+  }
+}
