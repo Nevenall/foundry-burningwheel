@@ -13,3 +13,5 @@ foundryconfig.json
 
 # default deploy destination
 release/
+
+importing/
