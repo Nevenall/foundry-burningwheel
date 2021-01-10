@@ -56,12 +56,22 @@
 
     .roll-full-width {
         width: 100%;
-        padding: 5px;
+        padding: 3px 5px;
         border: 1px black solid;
         margin-bottom: -1px;
 
         &.roll-extra-info {
             padding: 0;
+        }
+
+        &.whitespace-pre {
+            white-space: pre-wrap;
+        }
+
+        &.roll-title {
+            background-color: rgba(black, .75);
+            color: white;
+            font-weight: bold;
         }
     }
 
@@ -89,7 +99,7 @@
         font-size: 12px;
         font-weight: bold;
         text-align: center;
-        margin: 0 2px;
+        margin: 2px;
         display: inline-block;
     }
 
@@ -116,6 +126,14 @@
     .reroll-buttons {
         .chat-reroll > button {
             line-height: 1.5em;
+
+            &.chat-fate-button, &.chat-deeds-button {
+                flex: 1 1 45%;
+            }
+
+            &.chat-deeds-button {
+                margin-right: -1px;
+            }
         }
     }
 }

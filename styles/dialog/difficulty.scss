@@ -1,6 +1,26 @@
+@mixin difficulty-toggle($light, $normal, $dark) {
+    label {
+        background-color: black;
+        border-radius: 2px;
+        color: $normal;
+        border: 2px solid $dark;
+    }
+
+    input {
+        &:checked + label {
+            background: linear-gradient(rgba($normal, .25), rgba($normal, 0.75));
+            border: 2px solid $normal;
+            color: $light;
+        }
+        &:focus + label {
+            border-color: $normal;
+        }
+    }
+}
+
 .difficulty-dialog {
     width: 5em;
-    height: 5em;
+    height: 6.5em;
     position: fixed;
     bottom: 10px;
     right: 310px;
@@ -16,6 +36,38 @@
     flex-direction: column;
     padding: 10px;
 
+    .roll-mods {
+        height: 3em;
+        font-size: 12px;
+        display: flex;
+        flex-wrap: wrap;
+        .pill-toggle {
+            flex: 1;
+            height: 1.5em;
+
+            &.s-pool {
+                @include difficulty-toggle(lightblue, blue, #000077);
+            }
+            &.c-diff {
+                @include difficulty-toggle(lightgreen, green, #005500);
+            }
+            &.help {
+                @include difficulty-toggle(#FFFFaa, red, #880000);
+            }
+
+            &.ext-test {
+                flex: 0 0 100%;
+                @include difficulty-toggle(#FFFFaa, red, #880000);
+            }
+        }
+    }
+
+    .obstacle {
+        height: 4.5em;
+        display: flex;
+        flex-direction: column;
+    }
+
     input, .number {
         flex: 1;
         color: white;
@@ -24,5 +76,71 @@
     }
     .label {
         flex: 0 0 1em;
+    }
+}
+
+.extended-test {
+    width: 12em;
+    position: fixed;
+    top: 10px;
+    right: 320px;
+    border: 2px solid gray;
+    border-radius: 5px;
+    background-image: url("/ui/denim075.png");
+    color: white;
+    padding: 3px;
+    max-height: 50vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    button {
+        height: 15px;
+        line-height: 12px;
+        font-size: 12px;
+        padding: 2px;
+        background-color: rgba(#880000, .25);
+        border: 1px solid #FFFFaa;
+        color: #FFFFaa;
+        transition: background-color .25s;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #880000;
+        }
+    }
+
+    .test-title {
+        font-weight: bold;
+        font-size: 1.1em;
+        text-align: center;
+        border-bottom: 2px groove #FFFFaa;
+        margin-bottom: 5px;
+    }
+
+    .advancement {
+        .group-header {
+            font-weight: bold;
+            border-bottom: 1px solid #FFFFaa;
+        }
+
+        .entry {
+            .title {
+                flex: 1;
+                margin-left: 5px;
+                transition: background-color .25s;
+                &:hover {
+                    background-color: rgba(#880000, .25);
+                    cursor: pointer;
+                }
+            }
+            .difficulty {
+                flex: 0 0 12px;
+            }
+            button.action {
+                flex: 0 0 15px;
+                width: 15px;
+                border: 0;
+            }
+        }
     }
 }

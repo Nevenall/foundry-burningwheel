@@ -2,8 +2,9 @@
  * Chat message helpers
  */
 
-import { handleCallonReroll } from "./rolls/rerollCallon.js";
+import { handleTraitorReroll } from "./rolls/rerollTraitors.js";
 import { handleFateReroll } from "./rolls/rerollFate.js";
+import { BWActor } from "./actors/BWActor.js";
 
 /**
  * Binds buttons in chat log to perform actions
@@ -11,7 +12,8 @@ import { handleFateReroll } from "./rolls/rerollFate.js";
  */
 export function onChatLogRender(html: JQuery): void {
     html.on('click', 'button.chat-fate-button', (e) => handleFateReroll(e.target));
-    html.on('click', 'button.chat-callon-button', (e) => handleCallonReroll(e.target));
+    html.on('click', 'button.chat-deeds-button', (e) => handleTraitorReroll(e.target, true));
+    html.on('click', 'button.chat-callon-button', (e) => handleTraitorReroll(e.target));
 }
 
 
@@ -25,4 +27,18 @@ export function hideChatButtonsIfNotOwner(_message: unknown, html: JQuery, data:
         }
         message.find('div.reroll-buttons').each((i, b) => { b.style.display = "none"; });
     }
+}
+
+
+export async function simpleBroadcast(data: SimpleBroadcastMessageData, actor?: BWActor): Promise<Entity> {
+    const html = await renderTemplate("systems/burningwheel/templates/chat/simple-broadcast.hbs", data);
+    return ChatMessage.create({
+        content: html,
+        speaker: ChatMessage.getSpeaker({ actor })
+    });
+}
+export interface SimpleBroadcastMessageData {
+    title: string;
+    mainText: string;
+    extraData?: { title?: string, text?: string }[]
 }

@@ -1,25 +1,33 @@
-import { BWItem, MeleeWeapon, RangedWeapon, Skill, Spell } from "../items/item.js";
-import { Ability, BWActor } from "../bwactor.js";
+import { BWItem } from "../items/item.js";
+import { Ability, BWActor } from "../actors/BWActor.js";
 import { handleStatRoll } from "./rollStat.js";
 import { notifyError, ShadeString } from "../helpers.js";
 import { handleNpcStatRoll } from "./npcStatRoll.js";
-import { Npc } from "../npc.js";
+import { Npc } from "../actors/Npc.js";
 import { RollDialogData } from "./rolls.js";
 import { handleSpellRoll } from "./rollSpell.js";
-import { BWCharacter } from "module/character.js";
+import { BWCharacter } from "../actors/BWCharacter.js";
 import { handleNpcSpellRoll, handleNpcWeaponRoll } from "./npcSkillRoll.js";
 import { handleWeaponRoll } from "./rollWeapon.js";
+import { MeleeWeapon } from "../items/meleeWeapon.js";
+import { RangedWeapon } from "../items/rangedWeapon.js";
+import { Skill } from "../items/skill.js";
+import { Spell } from "../items/spell.js";
 
-export async function handleFightRoll({actor, type, itemId, attackIndex, positionPenalty, engagementBonus }: FightRollOptions): Promise<unknown> {
-    const dataPreset: Partial<RollDialogData> = {
-        optionalDiceModifiers: [ {
-            dice: engagementBonus, optional: true, label: "Engagement Bonus",
-        }],
-        optionalObModifiers: [ {
-            obstacle: positionPenalty, optional: true, label: "Weapon Disadvantage"
-        }],
-        offerSplitPool: true
-    };
+export async function handleFightRoll({actor, type, itemId, attackIndex, positionPenalty, engagementBonus, dataPreset }: FightRollOptions): Promise<unknown> {
+    dataPreset = dataPreset || {};
+    dataPreset.optionalDiceModifiers = dataPreset.optionalDiceModifiers || [];
+    dataPreset.optionalDiceModifiers.push({
+        dice: engagementBonus, optional: true, label: "Engagement Bonus",
+    });
+    dataPreset.optionalObModifiers = dataPreset.optionalObModifiers || [];
+    dataPreset.optionalObModifiers.push({
+        obstacle: positionPenalty, optional: true, label: "Weapon Disadvantage"
+    });
+    dataPreset.offerSplitPool = true,
+    dataPreset.deedsPoint = actor.data.data.deeds !== 0,
+    dataPreset.personaOptions = actor.data.data.persona ? Array.from(Array(Math.min(actor.data.data.persona, 3)).keys()) : undefined;
+    
     if (type === "skill") {
         if (!itemId) {
             return notifyError("No Item Specified", "Item id must be specified when rolling an attack with a weapon or spell");
@@ -81,14 +89,14 @@ export async function handleFightRoll({actor, type, itemId, attackIndex, positio
             shade,
             open: false,
             statName: type,
-            actor: (actor as BWActor & Npc),
+            actor: (actor as Npc),
             dataPreset
         });
     }
     const accessor = `data.${type}`;
     const stat = getProperty(actor, `data.${accessor}`) as Ability;
     return handleStatRoll({
-        actor,
+        actor: actor as BWCharacter,
         statName: type.titleCase(),
         stat,
         accessor,
@@ -103,4 +111,5 @@ export interface FightRollOptions {
     attackIndex?: number;
     engagementBonus: number;
     positionPenalty: number;
+    dataPreset?: Partial<RollDialogData>;
 }

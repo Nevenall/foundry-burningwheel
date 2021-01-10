@@ -1,10 +1,3 @@
-import { Armor } from "./armor.js";
-import { MeleeWeapon } from "./meleeWeapon.js";
-import { Possession } from "./possession.js";
-import { Property } from "./property.js";
-import { RangedWeapon } from "./rangedWeapon.js";
-import { Relationship } from "./relationship.js";
-import { Reputation } from "./reputation.js";
 import { AffiliationSheet } from "./sheets/affiliation-sheet.js";
 import { ArmorSheet } from "./sheets/armor-sheet.js";
 import { BeliefSheet } from "./sheets/belief-sheet.js";
@@ -17,21 +10,12 @@ import { RelationshipSheet } from "./sheets/relationship-sheet.js";
 import { ReputationSheet } from "./sheets/reputation-sheet.js";
 import { SkillSheet } from "./sheets/skill-sheet.js";
 import { TraitSheet } from "./sheets/trait-sheet.js";
-import { Skill } from "./skill.js";
-import { Trait } from "./trait.js";
 import { SpellSheet } from "./sheets/spell-sheet.js";
-import { Spell } from "./spell.js";
+import * as constants from "../constants.js";
+import { LifepathSheet } from "./sheets/lifepath-sheet.js";
+import { BWActor } from "../actors/BWActor.js";
+import { simpleBroadcast } from "../chat.js";
 
-export * from "./affiliation.js";
-export * from "./armor.js";
-export * from "./belief.js";
-export * from "./instinct.js";
-export * from "./meleeWeapon.js";
-export * from "./possession.js";
-export * from "./property.js";
-export * from "./rangedWeapon.js";
-export * from "./relationship.js";
-export * from "./reputation.js";
 export * from "./sheets/affiliation-sheet.js";
 export * from "./sheets/armor-sheet.js";
 export * from "./sheets/belief-sheet.js";
@@ -45,19 +29,14 @@ export * from "./sheets/reputation-sheet.js";
 export * from "./sheets/skill-sheet.js";
 export * from "./sheets/trait-sheet.js";
 export * from "./sheets/spell-sheet.js";
-export * from "./spell.js";
-export * from "./skill.js";
-export * from "./trait.js";
 
-export class BWItem extends Item {
+export class BWItem extends Item<BWItemData> {
+    async generateChatMessage(speaker: BWActor): Promise<Entity> {
+        return simpleBroadcast({ title: this.name, mainText: `Type - ${this.data.type}` }, speaker);
+    }
     prepareData(): void {
-        
-        this.data.hasOwner = !!this.actor;
-        if (prototypeList[this.type]) {
-            prototypeList[this.type].prototype.prepareData.bind(this)();
-        }
-
         super.prepareData();
+        this.data.hasOwner = !!this.actor;
     }
 
     data: BWItemData;
@@ -76,6 +55,9 @@ export interface ArthaEarner {
     fate: boolean;
     persona: boolean;
     deeds: boolean;
+    fateSpent: number;
+    personaSpent: number;
+    deedsSpent: number;
 }
 
 export interface HasPointCost {
@@ -88,87 +70,78 @@ export interface DisplayClass {
 
 export function RegisterItemSheets(): void {
     Items.unregisterSheet("core", ItemSheet);
-    Items.registerSheet("burningwheel", BeliefSheet, {
+    Items.registerSheet(constants.systemName, BeliefSheet, {
         types: ["belief"],
         makeDefault: true
     });
-    Items.registerSheet("burningwheel", InstinctSheet, {
+    Items.registerSheet(constants.systemName, InstinctSheet, {
         types: ["instinct"],
         makeDefault: true
     });
-    Items.registerSheet("burningwheel", TraitSheet, {
+    Items.registerSheet(constants.systemName, TraitSheet, {
         types: ["trait"],
         makeDefault: true
     });
 
-    Items.registerSheet("burningwheel", SkillSheet, {
+    Items.registerSheet(constants.systemName, SkillSheet, {
         types: ["skill"],
         makeDefault: true
     });
 
-    Items.registerSheet("burningwheel", RelationshipSheet, {
+    Items.registerSheet(constants.systemName, RelationshipSheet, {
         types: ["relationship"],
         makeDefault: true
     });
 
-    Items.registerSheet("burningwheel", PossessionSheet, {
+    Items.registerSheet(constants.systemName, PossessionSheet, {
         types: ["possession"],
         makeDefault: true
     });
 
-    Items.registerSheet("burningwheel", PropertySheet, {
+    Items.registerSheet(constants.systemName, PropertySheet, {
         types: ["property"],
         makeDefault: true
     });
 
-    Items.registerSheet("burningwheel", MeleeWeaponSheet, {
+    Items.registerSheet(constants.systemName, MeleeWeaponSheet, {
         types: ["melee weapon"],
         makeDefault: true
     });
 
-    Items.registerSheet("burningwheel", RangedWeaponSheet, {
+    Items.registerSheet(constants.systemName, RangedWeaponSheet, {
         types: ["ranged weapon"],
         makeDefault: true
     });
 
-    Items.registerSheet("burningwheel", ArmorSheet, {
+    Items.registerSheet(constants.systemName, ArmorSheet, {
         types: ["armor"],
         makeDefault: true
     });
 
-    Items.registerSheet("burningwheel", ReputationSheet, {
+    Items.registerSheet(constants.systemName, ReputationSheet, {
         types: ["reputation"],
         makeDefault: true
     });
 
-    Items.registerSheet("burningwheel", AffiliationSheet, {
+    Items.registerSheet(constants.systemName, AffiliationSheet, {
         types: ["affiliation"],
         makeDefault: true
     });
 
-    Items.registerSheet("burningwheel", SpellSheet, {
+    Items.registerSheet(constants.systemName, SpellSheet, {
         types: ["spell"],
         makeDefault: true
     });
-}
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const prototypeList: { [i: string]: typeof Item} = {
-    "trait": Trait as any,
-    "skill": Skill as any,
-    "relationship": Relationship as any,
-    "melee weapon":  MeleeWeapon as any,
-    "ranged weapon":  RangedWeapon as any,
-    "armor": Armor as any,
-    "possession":  Possession as any,
-    "property":  Property as any,
-    "reputation":  Reputation as any,
-    "spell": Spell as any
-};
+    Items.registerSheet(constants.systemName, LifepathSheet, {
+        types: ["lifepath"],
+        makeDefault: true
+    });
+}
 
 export type ItemType =
     "belief" | "instinct" | "trait" |
     "skill" | "armor" | "possession" |
     "property" | "relationship" | "melee weapon" |
     "ranged weapon" | "reputation" | "affiliation"
-    | "spell";
+    | "spell" | "lifepath";

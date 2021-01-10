@@ -1,6 +1,8 @@
-import { skillRootSelect, skillTypeSelect } from "../../constants.js";
+import { skillTypeSelect } from "../../constants.js";
+import { Skill } from "../skill.js";
+import { BWItemSheet, BWItemSheetData } from "./bwItemSheet.js";
 
-export class SkillSheet extends ItemSheet {
+export class SkillSheet extends BWItemSheet {
     static get defaultOptions(): FormApplicationOptions {
         return mergeObject(super.defaultOptions, {});
     }
@@ -11,13 +13,15 @@ export class SkillSheet extends ItemSheet {
 
     getData(): SkillSheetData {
         const data = super.getData() as SkillSheetData;
+
         data.skillTypes = skillTypeSelect;
-        data.skillRoots = skillRootSelect;
+        data.skillRoots = {};
+        Object.assign(data.skillRoots, (this.item as Skill).getRootSelect());
         return data;
     }
 }
 
-interface SkillSheetData extends ItemSheetData {
+interface SkillSheetData extends BWItemSheetData {
     skillTypes: { [index: string]: string };
     skillRoots: { [index: string]: string };
 }

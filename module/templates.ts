@@ -11,6 +11,7 @@ export async function preloadHandlebarsTemplates(): Promise<void> {
       "systems/burningwheel/templates/parts/rollable-item.hbs",
       "systems/burningwheel/templates/parts/rollable-skill.hbs",
       "systems/burningwheel/templates/parts/spell.hbs",
+      "systems/burningwheel/templates/parts/trait.hbs",
       "systems/burningwheel/templates/parts/weapons.hbs",
       "systems/burningwheel/templates/parts/character-settings.hbs",
 
@@ -18,7 +19,9 @@ export async function preloadHandlebarsTemplates(): Promise<void> {
       "systems/burningwheel/templates/parts/npc-editable.hbs",
       "systems/burningwheel/templates/parts/npc-skill.hbs",
       "systems/burningwheel/templates/parts/npc-spell.hbs",
-      "systems/burningwheel/templates/parts/npc-weapon.hbs"
+      "systems/burningwheel/templates/parts/npc-weapon.hbs",
+
+      "systems/burningwheel/templates/parts/lifepath.hbs"
     ];
 
     // Load the template parts

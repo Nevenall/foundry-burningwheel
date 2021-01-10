@@ -1,11 +1,12 @@
-import { BWActor } from "../bwactor.js";
-import { DisplayClass } from "./item.js";
+import { BWActor } from "../actors/BWActor.js";
+import { BWItem, BWItemData, DisplayClass } from "./item.js";
 
-export class Relationship extends Item<RelationshipData> {
+export class Relationship extends BWItem {
     prepareData(): void {
+        super.prepareData();
         this.data.data.safeId = this._id;
         if (this.actor) {
-            this.data.data.aptitude = parseInt(this.actor.data.data.circles.exp, 10) || 0;
+            this.data.data.aptitude = this.actor.data.data.circles.exp || 0;
         }
 
         if (this.data.data.hateful || this.data.data.enmity) {
@@ -24,7 +25,7 @@ export class Relationship extends Item<RelationshipData> {
     data: RelationshipDataRoot;
 }
 
-export interface RelationshipDataRoot extends ItemData<RelationshipData> {
+export interface RelationshipDataRoot extends BWItemData {
     data: RelationshipData;
 }
 
@@ -36,9 +37,9 @@ export interface RelationshipData extends DisplayClass {
     romantic: boolean;
     hateful: boolean;
     enmity: boolean;
-    influence: string;
+    influence: "minor" | "significant" | "powerful";
     building: boolean;
-    buildingProgress: string; // as number
+    buildingProgress: number;
 
     safeId?: string;
     aptitude?: number;

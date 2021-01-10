@@ -1,13 +1,15 @@
+import { AffiliationDataRoot, AffiliationData } from "../items/affiliation.js";
+import { Property, PropertyRootData, PropertyData } from "../items/property.js";
+import { RelationshipDataRoot, RelationshipData } from "../items/relationship.js";
+import { ReputationDataRoot, ReputationData } from "../items/reputation.js";
+import { Skill, SkillDataRoot, SkillData } from "../items/skill.js";
+import { Trait, TraitDataRoot, TraitData } from "../items/trait.js";
+import { CharacterSettings } from "../actors/BWCharacter.js";
 import { StringIndexedObject, ShadeString } from "../helpers.js";
 import {
-    Skill, SkillDataRoot, SkillData,
-    Trait, TraitDataRoot, TraitData,
-    PropertyRootData, PropertyData, Property,
-    ReputationDataRoot, ReputationData,
-    AffiliationData, AffiliationDataRoot,
-    RelationshipData, RelationshipDataRoot,
-    BWItem, BWItemData, ItemType } from "../items/item.js";
-import { CharacterSettings } from "../bwactor.js";
+    BWItem, BWItemData, ItemType
+} from "../items/item.js";
+import * as constants from "../constants.js";
 
 export function extractRelationshipData(parent: JQuery): BurnerRelationshipData {
     return {
@@ -50,16 +52,16 @@ function costToString(cost: number): ShadeString {
     return "W";
 }
 
-function getStatData(html: JQuery<HTMLElement>, name: string): { exp: string, shade: ShadeString} {
+function getStatData(html: JQuery<HTMLElement>, name: string): { exp: number, shade: ShadeString} {
     return { 
-        exp: extractNamedString(html, `${name}Spent`),
+        exp: extractNamedNumber(html, `${name}Spent`),
         shade: costToString(extractNamedNumber(html, `${name}ShadeSpent`))
     };
 }
 
-function getAttrData(html: JQuery<HTMLElement>, name: string): { exp: string, shade: ShadeString} {
+function getAttrData(html: JQuery<HTMLElement>, name: string): { exp: number, shade: ShadeString} {
     return { 
-        exp: extractNamedString(html, `${name}Stat`),
+        exp: extractNamedNumber(html, `${name}Stat`),
         shade: extractNamedString(html, `${name}Shade`) as ShadeString
     };
 }
@@ -86,11 +88,11 @@ export function extractBaseCharacterData(html: JQuery<HTMLElement>): StringIndex
 
     baseData.custom1 = {
         name: extractNamedString(html, "custom1Name"),
-        ...getAttrData(html, "custom1")
+        ...getStatData(html, "custom1")
     };
     baseData.custom2 = {
         name: extractNamedString(html, "custom2Name"),
-        ...getAttrData(html, "custom2")
+        ...getStatData(html, "custom2")
     };
 
     const settings: Partial<CharacterSettings> = {
@@ -108,12 +110,12 @@ export function extractSkillData(html: JQuery<HTMLElement>, skillsList: Skill[])
     const skills: Partial<SkillDataRoot>[] = [];
     let skillId = "";
     let skillName = "";
-    let skillExp = "0";
+    let skillExp = 0;
     let skillData: Partial<SkillDataRoot> | undefined;
     html.find("div.skills-grid").each((_, e) => {
         skillName = extractNamedChildString($(e), "skillName");
-        skillExp = extractNamedChildString($(e), "skillExponent");
-        if (!skillName || skillExp === "0" || !extractNamedCheck($(e), "skillOpened")) { return; }
+        skillExp = extractNamedChildNumber($(e), "skillExponent");
+        if (!skillName || skillExp === 0 || !extractNamedCheck($(e), "skillOpened")) { return; }
         skillId = extractNamedChildString($(e), "skillId");
         if (skillId) {
             skillData = skillsList.find(s => s._id === skillId)?.data;
@@ -135,7 +137,8 @@ export function extractSkillData(html: JQuery<HTMLElement>, skillsList: Skill[])
                     description: "Unknown skill generated during character burning. Update any incorrect data.",
                 },
                 type: "skill",
-                name: skillName
+                name: skillName,
+                img: constants.defaultImages.skill
             } as SkillDataRoot);
         }
     });
@@ -158,10 +161,11 @@ export function extractTraitData(html: JQuery<HTMLElement>, traitList: Trait[]):
             traits.push({
                 data: {
                     traittype: extractNamedChildString($(e), "traitType"),
-                    text: "Uknown trait created during character burning. Update data accordingly. If the trait adds a reputation or affiliation, those must be added in manually."
+                    text: "Unknown trait created during character burning. Update data accordingly. If the trait adds a reputation or affiliation, those must be added in manually."
                 } as TraitData,
                 type: "trait",
-                name: traitName
+                name: traitName,
+                img: constants.defaultImages[extractNamedChildString($(e), "traitType")]
             });
         }
     });
@@ -183,10 +187,11 @@ export function extractPropertyData(html: JQuery<HTMLElement>, propertyList: Pro
         } else {
             properties.push({
                 data: {
-                    description: "Uknown property created during character burning. Update data accordingly."
+                    description: "Unknown property created during character burning. Update data accordingly."
                 } as PropertyData,
                 type: "property",
-                name: propertyName
+                name: propertyName,
+                img: constants.defaultImages.property
             });
         }
     });
@@ -196,29 +201,31 @@ export function extractPropertyData(html: JQuery<HTMLElement>, propertyList: Pro
 export function extractReputationData(html: JQuery<HTMLElement>): Partial<ReputationDataRoot | AffiliationDataRoot>[] {
     const reputations: Partial<AffiliationDataRoot | ReputationDataRoot>[] = [];
     let repName = "";
-    let repDice = "0";
+    let repDice = 0;
     html.find(".burner-reputations").each((_, e) => {
         repName = extractNamedChildString($(e), "reputationName");
-        repDice = extractNamedChildString($(e), "reputationDice");
-        if (!repName || !extractNamedChildNumber($(e), "reputationCost") || repDice === "0") { return; }
+        repDice = extractNamedChildNumber($(e), "reputationDice");
+        if (!repName || !extractNamedChildNumber($(e), "reputationCost") || repDice === 0) { return; }
         if (!extractNamedChildCheck($(e), "reputationType")) {
             reputations.push({
                 data: {
                     dice: repDice,
-                    description: "Uknown affiliation created during character burning. Update data accordingly."
+                    description: "Unknown affiliation created during character burning. Update data accordingly."
                 } as AffiliationData,
                 type: "affiliation",
-                name: repName
+                name: repName,
+                img: constants.defaultImages.affiliation
             });
         } else {
             reputations.push({
                 data: {
                     dice: repDice,
                     infamous: false,
-                    description: "Uknown reputation created during character burning. Update data accordingly."
+                    description: "Unknown reputation created during character burning. Update data accordingly."
                 } as ReputationData,
                 type: "reputation",
-                name: repName
+                name: repName,
+                img: constants.defaultImages.reputation
             });
         }
     });
@@ -236,18 +243,19 @@ export function extractRelData(html: JQuery<HTMLElement>): Partial<RelationshipD
         relationships.push({
             data: {
                 forbidden: relData.forbidden,
-                description: "Relationship created during character burning. Fill in this decription accordinly.",
+                description: "Relationship created during character burning. Fill in this description accordingly.",
                 immediateFamily: relData.closeFamily,
                 otherFamily: relData.otherFamily,
                 romantic: relData.romantic,
                 hateful: relData.hateful,
                 enmity: false,
-                influence: "~",
+                influence: relData.power === 5 ? "minor" : (relData.power === 10 ? "significant" : "powerful"),
                 building: false,
-                buildingProgress: "0"
+                buildingProgress: 0
             } as RelationshipData,
             type: "relationship",
-            name: relName
+            name: relName,
+            img: constants.defaultImages.relationship
         });
     });
     return relationships;
@@ -272,7 +280,8 @@ export function extractGearData(html: JQuery<HTMLElement>, gearList: BWItem[]): 
             name: gearName,
             data: {
                 description: `Unknown ${gearType.titleCase()} created as part of character burning. Update with the appropriate data.`
-            }
+            },
+            img: constants.defaultImages[gearType]
         };
         gear.push(gearItem);
     });

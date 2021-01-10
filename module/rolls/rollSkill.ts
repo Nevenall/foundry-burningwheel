@@ -1,6 +1,5 @@
-import { BWActor, TracksTests } from "../bwactor.js";
+import { BWActor, TracksTests } from "../actors/BWActor.js";
 import * as helpers from "../helpers.js";
-import { Skill, PossessionRootData } from "../items/item.js";
 import {
     buildRerollData,
     getRollNameClass,
@@ -17,7 +16,10 @@ import {
     RollOptions,
     mergeDialogData, getSplitPoolText, getSplitPoolRoll
 } from "./rolls.js";
-import { BWCharacter } from "module/character.js";
+import { BWCharacter } from "../actors/BWCharacter.js";
+import { Skill } from "../items/skill.js";
+import { Possession, PossessionRootData } from "../items/possession.js";
+import { buildHelpDialog } from "../dialogs/buildHelpDialog.js";
 
 export async function handleSkillRollEvent({ target, sheet, dataPreset, extraInfo, onRollCallback }: SkillRollEventOptions ): Promise<unknown> {
     const skillId = target.dataset.skillId || "";
@@ -27,6 +29,15 @@ export async function handleSkillRollEvent({ target, sheet, dataPreset, extraInf
 }
 
 export async function handleSkillRoll({ actor, skill, dataPreset, extraInfo, onRollCallback }: SkillRollOptions): Promise<unknown> {
+    if (dataPreset && dataPreset.addHelp) {
+        // add a test log instead of testing
+        return buildHelpDialog({
+            exponent: skill.data.data.exp,
+            skillId: skill.id,
+            actor,
+            helpedWith: skill.name
+        });
+    }
     const rollModifiers = actor.getRollModifiers(skill.name);
 
     const templateData = mergeDialogData({
@@ -48,7 +59,7 @@ export async function handleSkillRoll({ actor, skill, dataPreset, extraInfo, onR
             || !!actor.data.data.ptgs.obPenalty
             || (dataPreset && dataPreset.obModifiers && !!dataPreset.obModifiers.length || false)
     }, dataPreset);
-    const html = await renderTemplate(templates.skillDialog, templateData);
+    const html = await renderTemplate(templates.pcRollDialog, templateData);
     return new Promise(_resolve =>
         new Dialog({
             title: `${skill.data.name} Test`,
@@ -70,7 +81,7 @@ export async function handleSkillRoll({ actor, skill, dataPreset, extraInfo, onR
 
 async function skillRollCallback(
     dialogHtml: JQuery, skill: Skill, actor: BWActor & BWCharacter, extraInfo?: string): Promise<unknown> {
-    const { diceTotal, difficultyTotal, wildForks, difficultyDice, baseDifficulty, obSources, dieSources, splitPool, skipAdvancement } = extractRollData(dialogHtml);
+    const { diceTotal, difficultyTotal, wildForks, difficultyDice, baseDifficulty, obSources, dieSources, splitPool, persona, deeds, addHelp, difficultyTestTotal } = extractRollData(dialogHtml);
 
     const dg = helpers.difficultyGroup(difficultyDice, difficultyTotal);
 
@@ -91,13 +102,13 @@ async function skillRollCallback(
 
     if (skill.data.data.tools) {
         const toolkitId = extractSelectString(dialogHtml, "toolkitId") || '';
-        const tools = actor.getOwnedItem(toolkitId);
+        const tools = actor.getOwnedItem(toolkitId) as Possession;
         if (tools) {
             const { expended, text } = await maybeExpendTools(tools);
             extraInfo = extraInfo ? `${extraInfo}${text}` : text;
             if (expended) {
                 tools.update({
-                    "data.expended": true
+                    "data.isExpended": true
                 }, {});
             }
         }
@@ -108,6 +119,15 @@ async function skillRollCallback(
         return { label: s, ...buildRerollData({ actor, roll, itemId: skill._id, splitPoolRoll }) as RerollData };
     });
     const success = (parseInt(roll.result) + wildForkBonus) >= difficultyTotal;
+    if (success || actor.data.successOnlyRolls.indexOf(skill.name.toLowerCase()) === -1) {
+        await skill.addTest(dg);
+    }
+
+    if (addHelp) {
+        game.burningwheel.modifiers.grantTests(difficultyTestTotal, success);
+    }
+
+    actor.updateArthaForSkill(skill.id, persona, deeds);
 
     const data: RollChatMessageData = {
         name: `${skill.name}`,
@@ -126,21 +146,8 @@ async function skillRollCallback(
         callons,
         extraInfo
     };
-    if (!skipAdvancement && (success || actor.data.successOnlyRolls.indexOf(skill.name.toLowerCase()) === -1)) {
-        await helpers.addTestToSkill(skill, dg);
-        skill = actor.getOwnedItem(skill._id) as Skill; // update skill with new data
-    }
-    if (helpers.canAdvance(skill.data.data)) {
-        Dialog.confirm({
-            title: `Advance ${skill.name}?`,
-            content: `<p>${skill.name} is ready to advance. Go ahead?</p>`,
-            yes: () => helpers.advanceSkill(skill),
-            no: () => { return; },
-            defaultYes: true
-        });
-    }
 
-    const messageHtml = await renderTemplate(templates.skillMessage, data);
+    const messageHtml = await renderTemplate(templates.pcRollMessage, data);
     return ChatMessage.create({
         content: messageHtml,
         speaker: ChatMessage.getSpeaker({actor})

@@ -1,4 +1,4 @@
-import { BWActor, TracksTests } from "../bwactor.js";
+import { BWActor, TracksTests } from "../actors/BWActor.js";
 
 import * as helpers from "../helpers.js";
 import {
@@ -10,12 +10,16 @@ import {
     rollDice,
     templates,
     extractRollData,
-    EventHandlerOptions, RollOptions, mergeDialogData, getSplitPoolText, getSplitPoolRoll
+    RollOptions,
+    mergeDialogData,
+    getSplitPoolText,
+    getSplitPoolRoll,
+    NpcEventHandlerOptions
 } from "./rolls.js";
-import { NpcSheet } from "../npc-sheet.js";
-import { Npc } from "module/npc.js";
+import { Npc } from "../actors/Npc.js";
+import { buildHelpDialog } from "../dialogs/buildHelpDialog.js";
 
-export async function handleNpcStatRollEvent({ target, sheet, dataPreset }: NpcRollEventOptions): Promise<unknown> {
+export async function handleNpcStatRollEvent({ target, sheet, dataPreset }: NpcEventHandlerOptions): Promise<unknown> {
     const actor = sheet.actor;
 
     const dice = getProperty(actor.data, target.dataset.stat || "") as number;
@@ -28,6 +32,21 @@ export async function handleNpcStatRollEvent({ target, sheet, dataPreset }: NpcR
 
 export async function handleNpcStatRoll({ dice, shade, open, statName, extraInfo, dataPreset, actor }: NpcStatRollOptions): Promise<unknown> {
     const rollModifiers = actor.getRollModifiers(statName);
+    dataPreset = dataPreset || {};
+    dataPreset.deedsPoint = actor.data.data.deeds !== 0;
+    if (actor.data.data.persona) {
+        dataPreset.personaOptions = Array.from(Array(Math.min(actor.data.data.persona, 3)).keys());
+    }
+
+    if (dataPreset && dataPreset.addHelp) {
+        // add a test log instead of testing
+        return buildHelpDialog({
+            exponent: dice,
+            path: `data.${statName}`,
+            actor,
+            helpedWith: statName
+        });
+    }
 
     const data = mergeDialogData<NpcStatDialogData>({
         name: `${statName.titleCase()} Test`,
@@ -38,7 +57,7 @@ export async function handleNpcStatRoll({ dice, shade, open, statName, extraInfo
         obPenalty: ["circles", "resources", "health"].indexOf(statName) === -1 ? actor.data.data.ptgs.obPenalty : 0,
         circlesBonus: statName === "circles" ? actor.data.circlesBonus : undefined,
         circlesMalus: statName === "circles" ? actor.data.circlesMalus : undefined,
-        stat: { exp: dice.toString() } as TracksTests,
+        stat: { exp: dice } as TracksTests,
         tax: 0,
         optionalDiceModifiers: rollModifiers.filter(r => r.optional && r.dice),
         optionalObModifiers: rollModifiers.filter(r => r.optional && r.obstacle),
@@ -79,7 +98,9 @@ async function statRollCallback(
     if (!roll) { return; }
     const isSuccessful = parseInt(roll.result, 10) >= rollData.difficultyTotal;
 
-
+    if (rollData.addHelp) {
+        game.burningwheel.modifiers.grantTests(rollData.difficultyTestTotal, isSuccessful);
+    }
 
     let splitPoolString: string | undefined;
     let splitPoolRoll: Roll | undefined;
@@ -93,6 +114,10 @@ async function statRollCallback(
     const callons: RerollData[] = actor.getCallons(name).map(s => {
         return { label: s, ...buildRerollData({ actor, roll, accessor, splitPoolRoll }) as RerollData };
     });
+
+    // because artha isn't tracked individually, it doesn't matter what gets updated.
+    // both cases here end up just subtracting the artha spent.
+    actor.updateArthaForStat("", rollData.persona, rollData.deeds);
     
     const data: RollChatMessageData = {
         name: `${name.titleCase()}`,
@@ -123,10 +148,6 @@ interface NpcStatDialogData extends RollDialogData {
     stat: TracksTests;
     circlesBonus?: {name: string, amount: number}[];
     circlesMalus?: {name: string, amount: number}[];
-}
-
-interface NpcRollEventOptions extends EventHandlerOptions {
-    sheet: NpcSheet;
 }
 
 export interface NpcStatRollOptions extends RollOptions {

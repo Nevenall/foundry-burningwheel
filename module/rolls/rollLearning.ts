@@ -1,5 +1,4 @@
-import { BWActor, TracksTests, Ability, BWCharacter } from "../bwactor.js";
-import { Skill, PossessionRootData } from "../items/item.js";
+import { BWActor, TracksTests, Ability} from "../actors/BWActor.js";
 import * as helpers from "../helpers.js";
 import {
     buildRerollData,
@@ -12,11 +11,19 @@ import {
     maybeExpendTools,
     RollDialogData,
     extractRollData,
-    EventHandlerOptions, RollOptions, mergeDialogData, getSplitPoolText, getSplitPoolRoll
+    EventHandlerOptions,
+    RollOptions,
+    mergeDialogData,
+    getSplitPoolText,
+    getSplitPoolRoll
 } from "./rolls.js";
+import { BWCharacter } from "../actors/BWCharacter.js";
+import { Skill } from "../items/skill.js";
+import { Possession, PossessionRootData } from "../items/possession.js";
+import { buildHelpDialog } from "../dialogs/buildHelpDialog.js";
 
 export async function handleLearningRollEvent(rollOptions: LearningRollEventOptions): Promise<unknown> {
-    const actor = rollOptions.sheet.actor as BWActor & BWCharacter;
+    const actor = rollOptions.sheet.actor;
     const skillId = rollOptions.target.dataset.skillId || "";
     const skill = (rollOptions.sheet.actor.getOwnedItem(skillId) as Skill);
     return handleLearningRoll({ actor, skill, ...rollOptions});
@@ -48,8 +55,19 @@ export function handleLearningRoll({ actor, skill, extraInfo, dataPreset, onRoll
 }
 
 async function buildLearningDialog({ skill, statName, actor, extraInfo, dataPreset, onRollCallback }: LearningRollDialogSettings): Promise<unknown> {
-    const rollModifiers = actor.getRollModifiers(skill.name);
+
+    const rollModifiers = actor.getRollModifiers(skill.name).concat(actor.getRollModifiers(statName));
     const stat = getProperty(actor.data.data, statName);
+
+    if (dataPreset && dataPreset.addHelp) {
+        // add a test log instead of testing
+        return buildHelpDialog({
+            exponent: stat.exp,
+            path: `data.${statName}`,
+            actor,
+            helpedWith: statName
+        });
+    }
 
     let tax = 0;
     if (statName.toLowerCase() === "will") {
@@ -87,7 +105,7 @@ async function buildLearningDialog({ skill, statName, actor, extraInfo, dataPres
             || (dataPreset && dataPreset.obModifiers && !!dataPreset.obModifiers.length || false)
     }, dataPreset);
 
-    const html = await renderTemplate(templates.learnDialog, data);
+    const html = await renderTemplate(templates.pcRollDialog, data);
     return new Promise(_resolve =>
         new Dialog({
             title: `${skill.name}`,
@@ -104,7 +122,7 @@ async function buildLearningDialog({ skill, statName, actor, extraInfo, dataPres
 }
 
 async function learningRollCallback(
-    dialogHtml: JQuery, skill: Skill, statName: string, actor: BWActor, extraInfo?: string, onRollCallback?: () => Promise<unknown>): Promise<unknown> {
+    dialogHtml: JQuery, skill: Skill, statName: string, actor: BWCharacter, extraInfo?: string, onRollCallback?: () => Promise<unknown>): Promise<unknown> {
     
     const rollData = extractRollData(dialogHtml);
     const stat = getProperty(actor.data.data, statName) as Ability;
@@ -121,31 +139,42 @@ async function learningRollCallback(
     }
     extraInfo = `${splitPoolString || ""} ${extraInfo || ""}`;
 
-    const fateReroll = buildRerollData({ actor, roll, itemId: skill._id, splitPoolRoll });
-    if (fateReroll) { fateReroll.type = "learning"; }
+    const fateReroll = buildRerollData({ actor, roll, accessor: `data.${statName}`, splitPoolRoll });
+    
+    if (fateReroll) {
+        fateReroll.type = "learning";
+        fateReroll.learningTarget = statName;
+    }
     const callons: RerollData[] = actor.getCallons(skill.name).map(s => {
         return {
             label: s,
             type: "learning",
-            ...buildRerollData({ actor, roll, itemId: skill._id, splitPoolRoll }) as RerollData
+            learningTarget: statName,
+            ...buildRerollData({ actor, roll, accessor: `data.${statName}`, splitPoolRoll }) as RerollData
         };
     });
 
     if (skill.data.data.tools) {
         const toolkitId = extractSelectString(dialogHtml, "toolkitId") || '';
-        const tools = actor.getOwnedItem(toolkitId);
+        const tools = actor.getOwnedItem(toolkitId) as Possession;
         if (tools) {
             const { expended, text } = await maybeExpendTools(tools);
             extraInfo = extraInfo ? `${extraInfo}${text}` : text;
             if (expended) {
                 tools.update({
-                    "data.expended": true
+                    "data.isExpended": true
                 }, {});
             }
         }
     }
 
-    const sendChatMessage = async (fr?: RerollData) => {
+    actor.updateArthaForStat(`data.${statName}`, rollData.persona, rollData.deeds);
+
+    const afterLearningTest = async (fr?: RerollData) => {
+        if (rollData.addHelp) {
+            game.burningwheel.modifiers.grantTests(rollData.difficultyTestTotal, isSuccessful);
+        }
+
         const data: RollChatMessageData = {
             name: `Beginner's Luck ${skill.data.name}`,
             successes: roll.result,
@@ -162,24 +191,21 @@ async function learningRollCallback(
             callons,
             extraInfo
         };
-        const messageHtml = await renderTemplate(templates.learnMessage, data);
+        const messageHtml = await renderTemplate(templates.pcRollMessage, data);
         if (onRollCallback) { onRollCallback(); }
         return ChatMessage.create({
             content: messageHtml,
             speaker: ChatMessage.getSpeaker({actor})
         });
     };
-    if (!rollData.skipAdvancement) {
-        return advanceLearning(skill, statName, actor, rollData.difficultyGroup, isSuccessful, fateReroll, sendChatMessage);
-    } else {
-        return sendChatMessage(fateReroll);
-    }
+
+    return advanceLearning(skill, statName, actor, rollData.difficultyGroup, isSuccessful, fateReroll, afterLearningTest);
 }
 
 async function advanceLearning(
         skill: Skill,
         statName: string,
-        owner: BWActor,
+        owner: BWCharacter,
         difficultyGroup: helpers.TestString,
         isSuccessful: boolean,
         fr: RerollData | undefined,
@@ -210,8 +236,8 @@ async function advanceLearning(
 }
 
 async function advanceBaseStat(
-        skill: Skill,
-        owner: BWActor,
+        _skill: Skill,
+        owner: BWCharacter,
         statName: string,
         difficultyGroup: helpers.TestString,
         isSuccessful: boolean,
@@ -220,8 +246,13 @@ async function advanceBaseStat(
 
     const accessor = `data.${statName.toLowerCase()}`;
     const rootStat = getProperty(owner, `data.${accessor}`);
-    await (owner as BWActor & BWCharacter).addStatTest(rootStat, statName, accessor, difficultyGroup, isSuccessful);
-    if (fr) { fr.learningTarget = skill.data.data.root1; }
+    if (statName === "custom1" || statName === "custom2") {
+        statName = owner.data.data[statName].name.titleCase();
+        await owner.addAttributeTest(rootStat, statName, accessor, difficultyGroup, isSuccessful);
+    } else {
+        await owner.addStatTest(rootStat, statName, accessor, difficultyGroup, isSuccessful);
+    }
+    
     return cb(fr);
 }
 
@@ -229,41 +260,7 @@ async function advanceLearningProgress(
         skill: Skill,
         fr: RerollData | undefined,
         cb: (fr?: RerollData) => Promise<Entity>) {
-    const progress = parseInt(skill.data.data.learningProgress, 10);
-    let requiredTests = skill.data.data.aptitude || 10;
-    let shade = getProperty(skill.actor || {}, `data.data.${skill.data.data.root1.toLowerCase()}`).shade;
-
-    skill.update({"data.learningProgress": progress + 1 }, {});
-    if (progress + 1 >= requiredTests) {
-        if (skill.data.data.root2 && skill.actor) {
-            const root2Shade = getProperty(skill.actor, `data.data.${skill.data.data.root2.toLowerCase()}`).shade;
-            if (shade != root2Shade) {
-                requiredTests -= 2;
-            }
-            shade = helpers.getWorstShadeString(shade, root2Shade);
-        }
-
-        Dialog.confirm({
-            title: `Finish Training ${skill.name}?`,
-            content: `<p>${skill.name} is ready to become a full skill. Go ahead?</p>`,
-            yes: () => {
-                const updateData = {};
-                updateData["data.learning"] = false;
-                updateData["data.learningProgress"] = 0;
-                updateData["data.routine"] = 0;
-                updateData["data.difficult"] = 0;
-                updateData["data.challenging"] = 0;
-                updateData["data.shade"] = shade;
-                updateData["data.exp"] = Math.floor((10 - requiredTests) / 2);
-                skill.update(updateData, {});
-            },
-            no: () => { return; },
-            defaultYes: true
-        });
-    }
-    if (fr) {
-        fr.learningTarget = "skill";
-    }
+    skill.addTest("Routine");
     return cb(fr);
 }
 

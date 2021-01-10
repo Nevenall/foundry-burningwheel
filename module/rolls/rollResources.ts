@@ -1,5 +1,4 @@
-import { Ability, BWActor, BWCharacter } from "../bwactor.js";
-import { BWActorSheet } from "../bwactor-sheet.js";
+import { Ability } from "../actors/BWActor.js";
 import {
     AttributeDialogData,
     buildRerollData,
@@ -10,13 +9,29 @@ import {
     templates,
     extractRollData,
     EventHandlerOptions,
-    mergeDialogData
+    mergeDialogData,
+    RollOptions
 } from "./rolls.js";
+import { BWCharacter } from "../actors/BWCharacter.js";
+import { buildHelpDialog } from "../dialogs/buildHelpDialog.js";
 
 export async function handleResourcesRollEvent({ sheet, dataPreset }: EventHandlerOptions): Promise<unknown> {
     const stat = sheet.actor.data.data.resources;
-    const actor = sheet.actor as BWActor;
-    const rollModifiers = sheet.actor.getRollModifiers("resources");
+    const actor = sheet.actor;
+    return handleResourcesRoll({ actor, stat, dataPreset });
+}
+
+export async function handleResourcesRoll({actor, stat, dataPreset}: ResourcesRollOption): Promise<unknown> {
+    if (dataPreset && dataPreset.addHelp) {
+        // add a test log instead of testing
+        return buildHelpDialog({
+            exponent: stat.exp,
+            path: "data.resources",
+            actor,
+            helpedWith: "Resources"
+        });
+    }
+    const rollModifiers = actor.getRollModifiers("resources");
     const data: ResourcesDialogData = mergeDialogData<ResourcesDialogData>({
         name: "Resources Test",
         difficulty: 3,
@@ -24,15 +39,15 @@ export async function handleResourcesRollEvent({ sheet, dataPreset }: EventHandl
         arthaDice: 0,
         tax: parseInt(actor.data.data.resourcesTax, 10),
         stat,
-        cashDieOptions: Array.from(Array(parseInt(actor.data.data.cash, 10) || 0).keys()),
-        fundDieOptions: Array.from(Array(parseInt(actor.data.data.funds, 10) || 0).keys()),
+        cashDieOptions: Array.from(Array(actor.data.data.cash || 0).keys()),
+        fundDieOptions: Array.from(Array(actor.data.data.funds || 0).keys()),
         optionalDiceModifiers: rollModifiers.filter(r => r.optional && r.dice),
         optionalObModifiers: rollModifiers.filter(r => r.optional && r.obstacle),
         showDifficulty: !game.burningwheel.useGmDifficulty,
         showObstacles: !game.burningwheel.useGmDifficulty
     }, dataPreset);
 
-    const html = await renderTemplate(templates.resourcesDialog, data);
+    const html = await renderTemplate(templates.pcRollDialog, data);
     return new Promise(_resolve =>
         new Dialog({
             title: `Resources Test`,
@@ -41,7 +56,7 @@ export async function handleResourcesRollEvent({ sheet, dataPreset }: EventHandl
                 roll: {
                     label: "Roll",
                     callback: async (dialogHtml: JQuery) =>
-                        resourcesRollCallback(dialogHtml, stat, sheet)
+                        resourcesRollCallback(dialogHtml, stat, actor)
                 }
             }
         }).render(true)
@@ -51,22 +66,51 @@ export async function handleResourcesRollEvent({ sheet, dataPreset }: EventHandl
 async function resourcesRollCallback(
         dialogHtml: JQuery,
         stat: Ability,
-        sheet: BWActorSheet) {
+        actor: BWCharacter) {
     const rollData = extractRollData(dialogHtml);
 
     if (rollData.cashDice) {
-        const currentCash = parseInt(sheet.actor.data.data.cash) || 0;
-        sheet.actor.update({"data.cash": currentCash - rollData.cashDice});
+        const currentCash = actor.data.data.cash || 0;
+        actor.update({"data.cash": currentCash - rollData.cashDice});
     }
 
     const roll = await rollDice(rollData.diceTotal, stat.open, stat.shade);
     if (!roll) { return; }
 
-    const fateReroll = buildRerollData({ actor: sheet.actor, roll, accessor: "data.resources" });
+    const fateReroll = buildRerollData({ actor, roll, accessor: "data.resources" });
     const isSuccess = parseInt(roll.result) >= rollData.difficultyTotal;
-    const callons: RerollData[] = sheet.actor.getCallons("resources").map(s => {
-        return { label: s, ...buildRerollData({ actor: sheet.actor, roll, accessor: "data.resources" }) as RerollData };
+    const callons: RerollData[] = actor.getCallons("resources").map(s => {
+        return { label: s, ...buildRerollData({ actor, roll, accessor: "data.resources" }) as RerollData };
     });
+
+    actor.updateArthaForStat("data.resources", rollData.persona, rollData.deeds);
+    if (!isSuccess) {
+        const taxAmount = rollData.difficultyGroup === "Challenging" ? (rollData.difficultyTotal - parseInt(roll.result)) :
+            (rollData.difficultyGroup === "Difficult" ? 2 : 1);
+        const taxMessage = new Dialog({
+            title: "Failed Resource Roll!",
+            content: `<p>You have failed a ${rollData.difficultyGroup} Resource test.</p><p>How do you wish to be taxed?</p><hr/>`,
+            buttons: {
+                full: {
+                    label: `Full Tax (${taxAmount} tax)`,
+                    callback: () => actor.taxResources(taxAmount, rollData.fundDice)
+                },
+                cut: {
+                    label: "Cut your losses. (1 tax)",
+                    callback: () => actor.taxResources(1, rollData.fundDice)
+                },
+                skip: {
+                    label: "Skip for now"
+                }
+            }
+        });
+        taxMessage.render(true);
+    }
+    await actor.addAttributeTest(stat, "Resources", "data.resources", rollData.difficultyGroup, isSuccess);
+
+    if (rollData.addHelp) {
+        game.burningwheel.modifiers.grantTests(rollData.difficultyTestTotal, isSuccess);
+    }
 
     const data: RollChatMessageData = {
         name: 'Resources',
@@ -82,42 +126,21 @@ async function resourcesRollCallback(
         fateReroll,
         callons
     };
-    const messageHtml = await renderTemplate(templates.resourcesMessage, data);
-    if (sheet.actor.data.type === "character") {
-        if (!isSuccess) {
-            const taxAmount = rollData.difficultyGroup === "Challenging" ? (rollData.difficultyTotal - parseInt(roll.result)) :
-                (rollData.difficultyGroup === "Difficult" ? 2 : 1);
-            const taxMessage = new Dialog({
-                title: "Failed Resource Roll!",
-                content: `<p>You have failed a ${rollData.difficultyGroup} Resource test.</p><p>How do you wish to be taxed?</p><hr/>`,
-                buttons: {
-                    full: {
-                        label: `Full Tax (${taxAmount} tax)`,
-                        callback: () => (sheet.actor as BWActor &  BWCharacter).taxResources(taxAmount, rollData.fundDice)
-                    },
-                    cut: {
-                        label: "Cut your losses. (1 tax)",
-                        callback: () => (sheet.actor as BWActor &  BWCharacter).taxResources(1, rollData.fundDice)
-                    },
-                    skip: {
-                        label: "Skip for now"
-                    }
-                }
-            });
-            taxMessage.render(true);
-        }
-        if (!rollData.skipAdvancement) {
-            (sheet.actor as BWActor & BWCharacter).addAttributeTest(stat, "Resources", "data.resources", rollData.difficultyGroup, isSuccess);
-        }
-    }
+    const messageHtml = await renderTemplate(templates.pcRollMessage, data);
 
     return ChatMessage.create({
         content: messageHtml,
-        speaker: ChatMessage.getSpeaker({actor: sheet.actor})
+        speaker: ChatMessage.getSpeaker({actor})
     });
 }
 
 export interface ResourcesDialogData extends AttributeDialogData {
     cashDieOptions: number[];
     fundDieOptions: number[];
+}
+
+export interface ResourcesRollOption extends RollOptions {
+    dataPreset?: Partial<ResourcesDialogData>;
+    actor: BWCharacter;
+    stat: Ability;
 }

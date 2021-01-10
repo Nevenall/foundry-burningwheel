@@ -10,19 +10,23 @@
 @import "./chat/dialog.scss";
 @import "./chat/roll.scss";
 @import "./dialog/character-burner.scss";
+@import "./dialog/difficulty.scss";
 @import "./dialog/duel-of-wits.scss";
 @import "./dialog/fight.scss";
-@import "./dialog/difficulty.scss";
+@import "./dialog/mods-and-help.scss";
 @import "./dialog/range-and-cover.scss";
-@import "./items/item.scss";
 @import "./items/armor.scss";
+@import "./items/belief.scss";
+@import "./items/item.scss";
+@import "./items/lifepath.scss";
 @import "./items/relationship.scss";
-@import "./items/spell.scss";
 @import "./items/skill.scss";
+@import "./items/spell.scss";
 @import "./items/trait.scss";
 @import "./items/weapon.scss";
-@import "./npc/npc.scss";
 @import "./mixins.scss";
+@import "./npc/npc.scss";
+@import "./setting.scss";
 
 .subheader,
 .header {
@@ -61,10 +65,10 @@ input {
     }
 
     &::selection {
-        background: rgba(#800, .25);
+        background: rgba(#800, .5);
     }
     &::-moz-selection {
-        background: rgba(#800, .25);
+        background: rgba(#800, .5);
     }
 }
 
@@ -155,6 +159,13 @@ i.item-action-icon {
 
     &:hover {
         color: #FF0000;
+    }
+}
+
+i.fas.clickable {
+    cursor: pointer;
+    &:hover {
+        color: red;
     }
 }
 

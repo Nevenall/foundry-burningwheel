@@ -1,5 +1,4 @@
-import { Ability, BWActor, BWCharacter } from "../bwactor.js";
-import { BWActorSheet } from "../bwactor-sheet.js";
+import { Ability, BWActor } from "../actors/BWActor.js";
 import {
     AttributeDialogData,
     buildRerollData,
@@ -10,6 +9,7 @@ import {
     templates,
     extractRollData, EventHandlerOptions, mergeDialogData
 } from "./rolls.js";
+import { BWCharacterSheet } from "../actors/sheets/BWCharacterSheet.js";
 
 export async function handleShrugRollEvent({ target, sheet, dataPreset}: EventHandlerOptions): Promise<unknown> {
     return handlePtgsRoll({ target, sheet, shrugging: true, dataPreset  });
@@ -49,32 +49,32 @@ async function handlePtgsRoll({ sheet, shrugging, dataPreset }: PtgsRollOptions)
         callback: async (_: JQuery) => actor.update(updateData)
     };
 
-    if (!shrugging && parseInt(actor.data.data.persona, 10)) {
+    if (!shrugging && actor.data.data.persona) {
         // we're gritting our teeth and have persona points. give option
         // to spend persona.
         buttons.withPersona = {
             label: "Spend Persona",
             callback: async (_: JQuery) => {
-                updateData["data.persona"] = parseInt(actor.data.data.persona, 10) - 1;
-                updateData["data.health.persona"] = (parseInt(actor.data.data.health.persona, 10) || 0) + 1;
+                updateData["data.persona"] = actor.data.data.persona - 1;
+                updateData["data.health.persona"] = (actor.data.data.health.persona || 0) + 1;
                 return actor.update(updateData);
             }
         };
     }
-    if (shrugging && parseInt(actor.data.data.fate, 10)) {
+    if (shrugging && actor.data.data.fate) {
         // we're shrugging it off and have fate points. give option
         // to spend fate.
         buttons.withFate = {
             label: "Spend Fate",
             callback: async (_: JQuery) => {
-                updateData["data.fate"] = parseInt(actor.data.data.fate, 10) - 1;
-                updateData["data.health.fate"] = (parseInt(actor.data.data.health.fate, 10) || 0) + 1;
+                updateData["data.fate"] = actor.data.data.fate - 1;
+                updateData["data.health.fate"] = (actor.data.data.health.fate || 0) + 1;
                 return actor.update(updateData);
             }
         };
     }
 
-    const html = await renderTemplate(templates.attrDialog, data);
+    const html = await renderTemplate(templates.pcRollDialog, data);
     return new Promise(_resolve =>
         new Dialog({
             title: `${data.name} Test`,
@@ -87,9 +87,9 @@ async function handlePtgsRoll({ sheet, shrugging, dataPreset }: PtgsRollOptions)
 async function ptgsRollCallback(
         dialogHtml: JQuery,
         stat: Ability,
-        sheet: BWActorSheet,
+        sheet: BWCharacterSheet,
         shrugging: boolean) {
-    const { diceTotal, baseDifficulty, difficultyTotal, difficultyGroup, dieSources, obSources, skipAdvancement } = extractRollData(dialogHtml);
+    const { diceTotal, baseDifficulty, difficultyTotal, difficultyGroup, dieSources, obSources, persona, deeds } = extractRollData(dialogHtml);
 
     const roll = await rollDice(diceTotal, stat.open, stat.shade);
     if (!roll) { return; }
@@ -115,16 +115,17 @@ async function ptgsRollCallback(
         fateReroll,
         callons
     };
+    sheet.actor.updateArthaForStat("resources", persona, deeds);
     if (isSuccessful) {
         const accessor = shrugging ? "data.ptgs.shrugging" : "data.ptgs.gritting";
         const updateData = {};
         updateData[accessor] = true;
         sheet.actor.update(updateData);
     }
-    if (sheet.actor.data.type === "character" && !skipAdvancement) {
-        (sheet.actor as BWActor & BWCharacter).addAttributeTest(stat, "Health", "data.health", difficultyGroup, isSuccessful);
+    if (sheet.actor.data.type === "character") {
+        sheet.actor.addAttributeTest(stat, "Health", "data.health", difficultyGroup, isSuccessful);
     }
-    const messageHtml = await renderTemplate(templates.attrMessage, data);
+    const messageHtml = await renderTemplate(templates.pcRollMessage, data);
     return ChatMessage.create({
         content: messageHtml,
         speaker: ChatMessage.getSpeaker({actor: sheet.actor})

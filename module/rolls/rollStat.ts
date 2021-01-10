@@ -1,4 +1,5 @@
-import { Ability, TracksTests, BWCharacter, BWActor } from "../bwactor.js";
+import { BWCharacter } from "../actors/BWCharacter.js";
+import { Ability, TracksTests } from "../actors/BWActor.js";
 import {
     buildRerollData,
     getRollNameClass,
@@ -10,23 +11,36 @@ import {
     RollOptions,
     extractRollData, EventHandlerOptions, mergeDialogData, getSplitPoolText, getSplitPoolRoll
 } from "./rolls.js";
+import { buildHelpDialog } from "../dialogs/buildHelpDialog.js";
 
 export async function handleStatRollEvent(options: EventHandlerOptions): Promise<unknown> {
     const accessor = options.target.dataset.accessor || "";
     const stat = getProperty(options.sheet.actor.data, accessor) as Ability;
-    const actor = options.sheet.actor as BWActor & BWCharacter;
+    const actor = options.sheet.actor;
     const statName = options.target.dataset.rollableName || "Unknown Stat";
     return handleStatRoll({ actor, statName, stat, accessor, ...options });
 }
 
 export async function handleStatRoll({ actor, statName, stat, accessor, dataPreset }: StatRollOptions): Promise<unknown> {
     const rollModifiers = actor.getRollModifiers(statName);
+
+    if (dataPreset && dataPreset.addHelp) {
+        // add a test log instead of testing
+        return buildHelpDialog({
+            exponent: stat.exp,
+            path: accessor,
+            actor,
+            helpedWith: statName
+        });
+    }
+
     let tax = 0;
     if (statName.toLowerCase() === "will") {
         tax = actor.data.data.willTax;
     } else if (statName.toLowerCase() === "forte") {
         tax = actor.data.data.forteTax;
     }
+
     const data = mergeDialogData<StatDialogData>({
         name: `${statName} Test`,
         difficulty: 3,
@@ -42,7 +56,7 @@ export async function handleStatRoll({ actor, statName, stat, accessor, dataPres
         showObstacles: !game.burningwheel.useGmDifficulty || !!actor.data.data.ptgs.obPenalty
     }, dataPreset);
 
-    const html = await renderTemplate(templates.statDialog, data);
+    const html = await renderTemplate(templates.pcRollDialog, data);
     return new Promise(_resolve =>
         new Dialog({
             title: `${statName} Test`,
@@ -61,10 +75,10 @@ export async function handleStatRoll({ actor, statName, stat, accessor, dataPres
 async function statRollCallback(
         dialogHtml: JQuery,
         stat: Ability,
-        actor: BWActor,
+        actor: BWCharacter,
         name: string,
         accessor: string) {
-    const { diceTotal, difficultyGroup, baseDifficulty, difficultyTotal, obSources, dieSources, splitPool, skipAdvancement } = extractRollData(dialogHtml);
+    const { diceTotal, difficultyGroup, baseDifficulty, difficultyTotal, obSources, dieSources, splitPool, persona, deeds, addHelp, difficultyTestTotal } = extractRollData(dialogHtml);
 
     const roll = await rollDice(diceTotal,
         stat.open,
@@ -84,6 +98,13 @@ async function statRollCallback(
         return { label: s, ...buildRerollData({ actor, roll, accessor, splitPoolRoll }) as RerollData };
     });
 
+    await actor.addStatTest(stat, name, accessor, difficultyGroup, isSuccessful);
+    if (addHelp) {
+        game.burningwheel.modifiers.grantTests(difficultyTestTotal, isSuccessful);
+    }
+
+    actor.updateArthaForStat(accessor, persona, deeds);
+
     const data: RollChatMessageData = {
         name: `${name}`,
         successes: roll.result,
@@ -100,11 +121,8 @@ async function statRollCallback(
         callons,
         extraInfo
     };
-    if (actor.data.type === "character" && !skipAdvancement) {
-        (actor as BWActor & BWCharacter).addStatTest(stat, name, accessor, difficultyGroup, isSuccessful);
-    }
 
-    const messageHtml = await renderTemplate(templates.skillMessage, data);
+    const messageHtml = await renderTemplate(templates.pcRollMessage, data);
     return ChatMessage.create({
         content: messageHtml,
         speaker: ChatMessage.getSpeaker({ actor })
@@ -117,7 +135,7 @@ interface StatDialogData extends RollDialogData {
 }
 
 export interface StatRollOptions extends RollOptions {
-    actor: BWActor;
+    actor: BWCharacter;
     statName: string;
     stat: Ability;
     accessor: string;

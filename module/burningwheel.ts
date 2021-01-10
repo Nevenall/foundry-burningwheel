@@ -1,34 +1,37 @@
-import { BWActor } from "./bwactor.js";
-import { BWCharacterSheet } from "./character-sheet.js";
-import {
-    BWItem,
-    RegisterItemSheets
-} from "./items/item.js";
+import { BWActor } from "./actors/BWActor.js";
+import { BWCharacterSheet } from "./actors/sheets/BWCharacterSheet.js";
+import { RegisterItemSheets } from "./items/item.js";
 
 import { hideChatButtonsIfNotOwner, onChatLogRender } from "./chat.js";
 import { ShadeString, slugify, translateWoundValue } from "./helpers.js";
-import { migrateData } from "./migration.js";
+import { migrateData } from "./migration/migration.js";
 import { registerSystemSettings } from "./settings.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
-import { NpcSheet } from "./npc-sheet.js";
-import { DuelOfWitsDialog } from "./dialogs/duelOfWits.js";
-import { FightDialog } from "./dialogs/fight.js";
-import { DifficultyDialog } from "./dialogs/difficultyDialog.js";
-import { RangeAndCoverDialog } from "./dialogs/rangeAndCover.js";
+import { NpcSheet } from "./actors/sheets/NpcSheet.js";
+
+import { actorConstructor, itemConstructor } from "./factory.js";
+
+import * as constants from "./constants.js";
+import { CreateBurningWheelMacro, RegisterMacros } from "./macros/Macro.js";
+import { BWSettingSheet } from "./actors/sheets/BWSettingSheet.js";
+import * as dialogs from "./dialogs/index.js";
 
 Hooks.once("init", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    CONFIG.Actor.entityClass = BWActor as any;
-    CONFIG.Item.entityClass = BWItem;
+    CONFIG.Actor.entityClass = actorConstructor;
+    CONFIG.Item.entityClass = itemConstructor;
     game.burningwheel = {};
 
     Actors.unregisterSheet("core", ActorSheet);
-    Actors.registerSheet("burningwheel", BWCharacterSheet, {
+    Actors.registerSheet(constants.systemName, BWCharacterSheet, {
         types: ["character"],
         makeDefault: true
     });
-    Actors.registerSheet("burningwheel", NpcSheet, {
+    Actors.registerSheet(constants.systemName, NpcSheet, {
         types: ["npc"],
+        makeDefault: true
+    });
+    Actors.registerSheet(constants.systemName, BWSettingSheet, {
+        types: ["setting"],
         makeDefault: true
     });
     
@@ -39,70 +42,13 @@ Hooks.once("init", async () => {
     registerSystemSettings();
     preloadHandlebarsTemplates();
     registerHelpers();
-
-    let dowData = {};
-    let fightData = {};
-    let rncData = {};
-    try {
-        dowData = await JSON.parse(game.settings.get("burningwheel", "dow-data"));
-    } catch (err) {
-        ui.notifications.warn("Error parsing serialized Duel of Wits data");
-        console.log(err);
-    }
-    try {
-        fightData = await JSON.parse(game.settings.get("burningwheel", "fight-data"));
-    } catch (err) {
-        ui.notifications.warn("Error parsing serialized Fight data");
-        console.log(err);
-    }
-    try {
-        rncData = await JSON.parse(game.settings.get("burningwheel", "rnc-data"));
-    } catch (err) {
-        ui.notifications.warn("Error parsing serialized Range and Cover data");
-        console.log(err);
-    }
-    
-    game.burningwheel.dow = new DuelOfWitsDialog({
-        title: "Duel of Wits",
-        buttons: {},
-        data: dowData
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any);
-    game.burningwheel.dow.activateSocketListeners();
-
-    game.burningwheel.fight = new FightDialog({
-        title: "Fight!",
-        buttons: {},
-        data: fightData
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any);
-    game.burningwheel.fight.activateSocketListeners();
-
-    game.burningwheel.rangeAndCover = new RangeAndCoverDialog({
-        title: "Fight!",
-        buttons: {},
-        data: rncData
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any);
-    game.burningwheel.rangeAndCover.activateSocketListeners();
+    dialogs.initializeExtendedTestDialogs();
 });
 
 Hooks.once("ready", async() => {
-    migrateData();
-    game.burningwheel.useGmDifficulty = await game.settings.get("burningwheel", "useGmDifficulty");
-    if (game.burningwheel.useGmDifficulty) {
-        const difficulty = await game.settings.get("burningwheel", "gmDifficulty");
-        game.burningwheel.gmDifficulty = new DifficultyDialog(difficulty);
-        game.burningwheel.gmDifficulty.render(true);
-    }
-});
-
-Hooks.on("renderSidebarTab", async (_data, html: JQuery) => {
-    if (html.prop("id") === "combat") { // this is the combat tab
-        DuelOfWitsDialog.addSidebarControl(html);
-        FightDialog.addSidebarControl(html);
-        RangeAndCoverDialog.addSidebarControl(html);
-    }
+    await migrateData();
+    await dialogs.initializeRollPanels();
+    RegisterMacros();
 });
 
 function registerHelpers() {
@@ -200,4 +146,7 @@ function registerHelpers() {
 Hooks.on("renderChatLog", (_app, html: JQuery, _data) => onChatLogRender(html));
 Hooks.on("renderChatMessage", (app, html, data) => hideChatButtonsIfNotOwner(app, html, data));
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-Hooks.on("createOwnedItem", (actor: BWActor, item: ItemData, _options: any, userId: string) => actor.processNewItem(item, userId));
+Hooks.on("createOwnedItem", (actor: BWActor, item: ItemData, _options: any, userId: string) => {
+    if (actor.data.type !== "setting") { actor.processNewItem(item, userId); }
+});
+Hooks.on("hotbarDrop", (_bar, data, slot) => CreateBurningWheelMacro(data, slot));

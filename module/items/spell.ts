@@ -1,17 +1,18 @@
-import { BWActor } from "../bwactor.js";
+import { BWActor } from "../actors/BWActor.js";
 import { weaponLengthSelect } from "../constants.js";
 import { StringIndexedObject, DivOfText } from "../helpers.js";
-import { HasPointCost, BWItemData } from "./item.js";
+import { HasPointCost, BWItemData, BWItem } from "./item.js";
 
-export class Spell extends Item<SpellData> {
+export class Spell extends BWItem {
     prepareData(): void {
+        super.prepareData();
         this.data.obstacleLabel = 
             `${this.data.data.variableObstacle ?
                 this.data.data.variableObstacleDescription :
                 this.data.data.obstacle}${this.data.data.upSpell?
                 '^':''}`;
         if (this.data.data.isWeapon && this.data.hasOwner && this.actor) {
-            const willScore = parseInt(this.actor.data.data.will.exp);
+            const willScore = this.actor.data.data.will.exp;
             if (this.data.data.halfWill) {
                 this.data.data.mark = Math.floor(willScore / 2.0) + this.data.data.willDamageBonus;
             } else {
@@ -24,17 +25,17 @@ export class Spell extends Item<SpellData> {
         this.data.spellLengths = weaponLengthSelect;
 
         if (this.data.hasOwner && this.actor) {
-            this.data.data.aptitude = 10 - parseInt(this.actor.data.data.perception.exp || "1")
+            this.data.data.aptitude = 10 - this.actor.data.data.perception.exp || 1
                 + this.actor.getAptitudeModifiers("perception")
                 + this.actor.getAptitudeModifiers("spells");
         }
     }
 
-    static GetSpellMessageData(spell: Spell): string {
+    getSpellMessageData(): string {
         const element = document.createElement("div");
         element.className = "spell-extra-info";
-        element.appendChild(DivOfText(spell.name, "spell-title"));
-        if (spell.data.data.isWeapon) {
+        element.appendChild(DivOfText(this.name, "spell-title"));
+        if (this.data.data.isWeapon) {
             const roll = new Roll("1d6").roll().dice[0].results[0].result;
             element.appendChild(DivOfText("I", "ims-header"));
             element.appendChild(DivOfText("M", "ims-header"));
@@ -44,16 +45,14 @@ export class Spell extends Item<SpellData> {
             element.appendChild(DivOfText("DoF", "ims-header"));
             element.appendChild(DivOfText("Length", "ims-header"));
         
-            element.appendChild(DivOfText("B " + spell.data.data.incidental, roll < 3 ? "highlight" : undefined));
-            element.appendChild(DivOfText("B " + spell.data.data.mark, [3,4].includes(roll) ? "highlight" : undefined));
-            element.appendChild(DivOfText("B " + spell.data.data.superb, roll > 4 ? "highlight" : undefined));
-            element.appendChild(DivOfText("" + spell.data.data.va));
-            element.appendChild(DivOfText("" + spell.data.data.actions));
+            element.appendChild(DivOfText("B " + this.data.data.incidental, roll < 3 ? "highlight" : undefined));
+            element.appendChild(DivOfText("B " + this.data.data.mark, [3,4].includes(roll) ? "highlight" : undefined));
+            element.appendChild(DivOfText("B " + this.data.data.superb, roll > 4 ? "highlight" : undefined));
+            element.appendChild(DivOfText("" + this.data.data.va));
+            element.appendChild(DivOfText("" + this.data.data.actions));
             element.appendChild(DivOfText(`${roll}`, "roll-die"));
-            element.appendChild(DivOfText(spell.data.data.weaponLength));
+            element.appendChild(DivOfText(this.data.data.weaponLength));
         }
-        
-
         return element.outerHTML;
     }
 
@@ -63,7 +62,7 @@ export class Spell extends Item<SpellData> {
     }
 }
 
-export interface SpellDataRoot extends ItemData<SpellData>, BWItemData {
+export interface SpellDataRoot extends BWItemData {
     spellLengths: StringIndexedObject<string>;
     obstacleLabel: string;
     type: "spell"
@@ -86,7 +85,7 @@ export interface SpellData extends HasPointCost {
     rpCost: number;
 
     inPracticals: boolean;
-    learningProgress: string;
+    learningProgress: number;
 
     isWeapon: boolean;
     halfWill: boolean;

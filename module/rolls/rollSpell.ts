@@ -1,7 +1,8 @@
-import { BWActor } from "module/bwactor.js";
-import { BWCharacter } from "module/character.js";
+import { BWActor } from "../actors/BWActor.js";
+import { BWCharacter } from "../actors/BWCharacter.js";
+import { Skill } from "../items/skill.js";
+import { Spell } from "../items/spell.js";
 import * as helpers from "../helpers.js";
-import { Skill, Spell } from "../items/item.js";
 import { handleLearningRoll } from "./rollLearning.js";
 import { EventHandlerOptions, RollDialogData, RollOptions } from "./rolls.js";
 import { handleSkillRoll } from "./rollSkill.js";
@@ -28,14 +29,14 @@ export async function handleSpellRoll({ actor, spell, skill, dataPreset }: Spell
         return helpers.notifyError("Missing Spell",
             "The spell being cast seems to be missing from the character sheet.");
     }
-    const spellData = Spell.GetSpellMessageData(spell);
+    const spellData = spell.getSpellMessageData();
 
     if (skill) {
         const obstacle = spell.data.data.variableObstacle ? 3 : spell.data.data.obstacle;
         let practicalsPenalty = 0;
         const spellPreset: Partial<RollDialogData> = { difficulty: obstacle };
         if (spell.data.data.inPracticals) {
-            practicalsPenalty = (spell.data.data.aptitude || 9) - parseInt(spell.data.data.learningProgress || "0");
+            practicalsPenalty = (spell.data.data.aptitude || 9) - spell.data.data.learningProgress || 0;
             spellPreset.obModifiers = [
                 { label: "In Practicals", obstacle: practicalsPenalty, optional: false }
             ];
@@ -53,9 +54,9 @@ export async function handleSpellRoll({ actor, spell, skill, dataPreset }: Spell
         dataPreset.useCustomDifficulty = true;
 
         const onRollCallback = async () => {
-            showSpellTaxDialog(obstacle, spell.name, actor, dataPreset?.skipAdvancement);
-            if (spell.data.data.inPracticals && !dataPreset?.skipAdvancement) {
-                const amount = parseInt(spell.data.data.learningProgress || "0");
+            showSpellTaxDialog(obstacle, spell.name, actor, dataPreset || {});
+            if (spell.data.data.inPracticals) {
+                const amount = spell.data.data.learningProgress || 0;
                 const aptitude = spell.data.data.aptitude || 9;
                 spell.update({ "data.learningProgress": amount + 1 }, {});
                 if (amount + 1 >= aptitude) {

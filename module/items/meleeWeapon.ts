@@ -1,13 +1,14 @@
-import { BWActor } from "../bwactor.js";
-import { DisplayClass, HasPointCost } from "./item.js";
+import { BWActor } from "../actors/BWActor.js";
+import { BWItem, BWItemData, DisplayClass, HasPointCost } from "./item.js";
 import * as helpers from "../helpers.js";
 import { QualityString } from "../constants.js";
 import { translateWoundValue } from "../helpers.js";
 
-export class MeleeWeapon extends Item {
+export class MeleeWeapon extends BWItem {
     prepareData(): void {
+        super.prepareData();
         if (this.actor) {
-            let power = parseInt(this.actor.data.data.power.exp);
+            let power = this.actor.data.data.power.exp;
             if (this.actor.data.data.power.shade === "G") {
                 power += 2;
             }
@@ -24,10 +25,10 @@ export class MeleeWeapon extends Item {
         this.data.data.cssClass = "equipment-weapon";
     }
 
-    static GetWeaponMessageData(weapon: MeleeWeapon, attackIndex: number): string {
+    getWeaponMessageData(attackIndex: number): string {
         const element = document.createElement("div");
         element.className = "weapon-extra-info";
-        element.appendChild(helpers.DivOfText(`${weapon.name} ${weapon.data.data.attacks[attackIndex].attackName}`, "ims-title shade-black"));
+        element.appendChild(helpers.DivOfText(`${this.name} ${this.data.data.attacks[attackIndex].attackName}`, "ims-title shade-black"));
         element.appendChild(helpers.DivOfText("I", "ims-header"));
         element.appendChild(helpers.DivOfText("M", "ims-header"));
         element.appendChild(helpers.DivOfText("S", "ims-header"));
@@ -35,12 +36,12 @@ export class MeleeWeapon extends Item {
         element.appendChild(helpers.DivOfText("Va", "ims-header"));
         element.appendChild(helpers.DivOfText("Length", "ims-header"));
     
-        element.appendChild(helpers.DivOfText(translateWoundValue(weapon.data.data.shade, weapon.data.data.attacks[attackIndex].incidental || 1)));
-        element.appendChild(helpers.DivOfText(translateWoundValue(weapon.data.data.shade, weapon.data.data.attacks[attackIndex].mark || 1)));
-        element.appendChild(helpers.DivOfText(translateWoundValue(weapon.data.data.shade, weapon.data.data.attacks[attackIndex].superb || 1)));
-        element.appendChild(helpers.DivOfText(weapon.data.data.attacks[attackIndex].add));
-        element.appendChild(helpers.DivOfText(weapon.data.data.attacks[attackIndex].vsArmor));
-        element.appendChild(helpers.DivOfText(weapon.data.data.attacks[attackIndex].weaponLength.titleCase()));
+        element.appendChild(helpers.DivOfText(translateWoundValue(this.data.data.shade, this.data.data.attacks[attackIndex].incidental || 1)));
+        element.appendChild(helpers.DivOfText(translateWoundValue(this.data.data.shade, this.data.data.attacks[attackIndex].mark || 1)));
+        element.appendChild(helpers.DivOfText(translateWoundValue(this.data.data.shade, this.data.data.attacks[attackIndex].superb || 1)));
+        element.appendChild(helpers.DivOfText(this.data.data.attacks[attackIndex].add));
+        element.appendChild(helpers.DivOfText(this.data.data.attacks[attackIndex].vsArmor));
+        element.appendChild(helpers.DivOfText(this.data.data.attacks[attackIndex].weaponLength.titleCase()));
         return element.outerHTML;
     }
     
@@ -51,7 +52,7 @@ export class MeleeWeapon extends Item {
     data: MeleeWeaponRootData;
 }
 
-export interface MeleeWeaponRootData extends ItemData<MeleeWeaponData> {
+export interface MeleeWeaponRootData extends BWItemData {
     data: MeleeWeaponData;
 }
 
@@ -62,7 +63,7 @@ export interface MeleeWeaponData extends DisplayClass, HasPointCost {
     description: string;
     shade: helpers.ShadeString;
     attacks: AttackData[];
-
+    skillId: string;
 }
 
 export interface AttackData {

@@ -22,7 +22,8 @@
             data-stat="data.{{attributePath}}"
             data-shade="data.{{attributeShadePath}}"
             data-rollable-name="{{statName}}"
-            class="stat-value stat-rollable modifiable">
+            class="stat-value stat-rollable modifiable"
+            {{#if draggable}} draggable="true" data-accessor="{{accessor}}" data-stat-name="{{titlecase statName}}"{{/if}}>
         {{else}}
         <div class="stat-value">
         {{/if}}

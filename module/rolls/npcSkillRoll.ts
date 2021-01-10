@@ -1,4 +1,4 @@
-import { Ability, BWActor, TracksTests } from "../bwactor.js";
+import { Ability, BWActor, TracksTests } from "../actors/BWActor.js";
 
 import {
     buildRerollData,
@@ -10,17 +10,23 @@ import {
     templates,
     extractRollData,
     rollWildFork,
-    EventHandlerOptions,
     RollOptions,
-    mergeDialogData, getSplitPoolText, getSplitPoolRoll
+    mergeDialogData,
+    getSplitPoolText,
+    getSplitPoolRoll,
+    NpcEventHandlerOptions
 } from "./rolls.js";
-import { NpcSheet } from "../npc-sheet.js";
-import { Skill, MeleeWeapon, RangedWeapon, Spell, PossessionRootData } from "../items/item.js";
 import { byName, notifyError } from "../helpers.js";
-import { Npc } from "../npc.js";
+import { Npc } from "../actors/Npc.js";
 import { handleNpcStatRoll, NpcStatName, NpcStatRollOptions } from "./npcStatRoll.js";
+import { Skill } from "../items/skill.js";
+import { MeleeWeapon } from "../items/meleeWeapon.js";
+import { PossessionRootData } from "../items/possession.js";
+import { RangedWeapon } from "../items/rangedWeapon.js";
+import { Spell } from "../items/spell.js";
+import { buildHelpDialog } from "../dialogs/buildHelpDialog.js";
 
-export async function handleNpcWeaponRollEvent({ target, sheet, dataPreset }: NpcRollEventOptions): Promise<unknown> {
+export async function handleNpcWeaponRollEvent({ target, sheet, dataPreset }: NpcEventHandlerOptions): Promise<unknown> {
     const skillId = target.dataset.skillId || "";
     const itemId = target.dataset.weaponId || "";
     if (!skillId) {
@@ -36,7 +42,6 @@ export async function handleNpcWeaponRollEvent({ target, sheet, dataPreset }: Np
         attackIndex,
         dataPreset
     });
-
 }
 
 export async function handleNpcWeaponRoll({actor, weapon, skill, attackIndex, dataPreset}: NpcRollOptions): Promise<unknown> {
@@ -44,12 +49,12 @@ export async function handleNpcWeaponRoll({actor, weapon, skill, attackIndex, da
         return notifyError("Missing Weapon", "The weapon that is being cast appears to be missing from the character sheet.");
     }
     const extraInfo = weapon.type === "melee weapon" ? 
-        MeleeWeapon.GetWeaponMessageData(weapon as MeleeWeapon, attackIndex || 0) :
-        RangedWeapon.GetWeaponMessageData(weapon as RangedWeapon);
+        (weapon as MeleeWeapon).getWeaponMessageData(attackIndex || 0) :
+        (weapon as RangedWeapon).getWeaponMessageData();
     return handleNpcSkillRoll({actor, skill, extraInfo, dataPreset});
 }
 
-export async function handleNpcSpellRollEvent({ target, sheet, dataPreset }: NpcRollEventOptions): Promise<unknown> {
+export async function handleNpcSpellRollEvent({ target, sheet, dataPreset }: NpcEventHandlerOptions): Promise<unknown> {
     const skillId = target.dataset.skillId || "";
     const itemId = target.dataset.spellId || "";
     if (!skillId) {
@@ -71,17 +76,33 @@ export async function handleNpcSpellRoll({ actor, spell, skill, dataPreset}: Npc
         dataPreset = { difficulty: obstacle };
     }
     dataPreset.useCustomDifficulty = dataPreset.showObstacles = dataPreset.showDifficulty = true;
-    const extraInfo = Spell.GetSpellMessageData(spell);
+    const extraInfo = spell.getSpellMessageData();
     return handleNpcSkillRoll({actor, skill, extraInfo, dataPreset});
 }
 
-export async function handleNpcSkillRollEvent({ target, sheet, extraInfo, dataPreset }: NpcRollEventOptions): Promise<unknown> {
+export async function handleNpcSkillRollEvent({ target, sheet, extraInfo, dataPreset }: NpcEventHandlerOptions): Promise<unknown> {
     const actor = sheet.actor;
     const skill = actor.getOwnedItem(target.dataset.skillId || "") as Skill;
     return handleNpcSkillRoll({actor, skill, extraInfo, dataPreset});
 }
 
 export async function handleNpcSkillRoll({ actor, skill, extraInfo, dataPreset}: NpcRollOptions): Promise<unknown>  {
+    dataPreset = dataPreset || {};
+    dataPreset.deedsPoint = actor.data.data.deeds !== 0;
+
+    if (dataPreset && dataPreset.addHelp) {
+        // add a test log instead of testing
+        return buildHelpDialog({
+            exponent: skill.data.data.exp,
+            skillId: skill.id,
+            actor,
+            helpedWith: skill.name
+        });
+    }
+
+    if (actor.data.data.persona) {
+        dataPreset.personaOptions = Array.from(Array(Math.min(actor.data.data.persona, 3)).keys());
+    }
     
     if (skill.data.data.learning) {
         const accessor = `data.${skill.data.data.root1}`;
@@ -92,7 +113,7 @@ export async function handleNpcSkillRoll({ actor, skill, extraInfo, dataPreset}:
         }
         const stat = getProperty(actor.data, accessor) as Ability;
         const rollData: NpcStatRollOptions = {
-            dice: parseInt(stat.exp),
+            dice: stat.exp,
             shade: stat.shade,
             open: stat.open,
             statName: skill.data.data.root1 as NpcStatName,
@@ -114,7 +135,7 @@ export async function handleNpcSkillRoll({ actor, skill, extraInfo, dataPreset}:
                         label: skill.data.data.root2.titleCase(),
                         callback: () => {
                             const stat2 = getProperty(actor.data, `data.${skill.data.data.root2}`) as Ability;
-                            rollData.dice = parseInt(stat2.exp);
+                            rollData.dice = stat2.exp;
                             rollData.shade = stat2.shade;
                             rollData.open = stat2.open;
                             rollData.statName = skill.data.data.root2 as NpcStatName;
@@ -191,10 +212,18 @@ async function skillRollCallback(
     extraInfo = `${splitPoolString || ""} ${extraInfo || ""}`;
 
     const fateReroll = buildRerollData({ actor, roll, itemId: skill.id, splitPoolRoll });
-    const callons: RerollData[] = actor.getCallons(name).map(s => {
+    const callons: RerollData[] = actor.getCallons(skill.name).map(s => {
         return { label: s, ...buildRerollData({ actor, roll, splitPoolRoll, itemId: skill._id }) as RerollData };
     });
+
+    // because artha isn't tracked individually, it doesn't matter what gets updated.
+    // both cases here end up just subtracting the artha spent.
+    actor.updateArthaForStat("", rollData.persona, rollData.deeds);
     
+    if (rollData.addHelp) {
+        game.burningwheel.modifiers.grantTests(rollData.difficultyTestTotal, isSuccessful);
+    }
+
     const data: RollChatMessageData = {
         name: `${skill.name}`,
         successes: '' + (parseInt(roll.result) + wildForkBonus),
@@ -226,10 +255,6 @@ interface NpcSkillDialogData extends RollDialogData {
     toolkits: PossessionRootData[];
     forkOptions: {name: string; amount: number}[];
     wildForks: {name: string; amount: number}[];
-}
-
-interface NpcRollEventOptions extends EventHandlerOptions {
-    sheet: NpcSheet;
 }
 
 interface NpcRollOptions extends RollOptions {
