@@ -12,6 +12,7 @@ export class BWSettingSheet extends ActorSheet {
     }
     static get defaultOptions(): FormApplicationOptions {
         return mergeObject(super.defaultOptions, {
+            classes:  ["bw-app"],
             width: 600
         });
     }
@@ -106,7 +107,7 @@ export class BWSettingSheet extends ActorSheet {
             dragData = JSON.parse(event.dataTransfer?.getData('text/plain') || "");
         }
         catch (err) {
-            console.log(err);
+            console.error(err);
             return;
         }
         
