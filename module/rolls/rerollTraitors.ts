@@ -7,7 +7,7 @@ import { Skill, SkillData } from "../items/skill.js";
 
 export async function handleTraitorReroll(target: HTMLButtonElement, isDeeds = false): Promise<unknown> {
     
-    const actor = game.actors.get(target.dataset.actorId || "") as BWActor;
+    const actor = game.actors?.get(target.dataset.actorId || "") as BWActor;
     const accessor = target.dataset.accessor || '';
     const name = target.dataset.rollName || '';
     const itemId = target.dataset.itemId || '';
@@ -25,7 +25,7 @@ export async function handleTraitorReroll(target: HTMLButtonElement, isDeeds = f
     if (["stat", "learning"].includes(target.dataset.rerollType || "")) {
         rollStat = getProperty(actor, `data.${accessor}`);
     } else {
-        rollStat = (actor.getOwnedItem(itemId) as Skill).data.data;
+        rollStat = (actor.items.get(itemId) as Skill).data.data;
     }
 
     const successTarget = rollStat.shade === "B" ? 3 : (rollStat.shade === "G" ? 2 : 1);
@@ -90,8 +90,8 @@ export async function handleTraitorReroll(target: HTMLButtonElement, isDeeds = f
                 }
                 updateData[`${accessor}.deeds`] = isDeeds ? parseInt(getProperty(actor, `data.${accessor}.deeds`) || "0") + 1 : undefined;
             } else if (target.dataset.rerollType === "skill" && isDeeds) {
-                const skill = actor.getOwnedItem(itemId) as Skill;
-                await skill.update({ "data.deeds": skill.data.data.deeds + 1 }, {});
+                const skill = actor.items.get<Skill>(itemId);
+                await skill?.update({ "data.deeds": skill.data.data.deeds + 1 }, {});
             }
         }
     }

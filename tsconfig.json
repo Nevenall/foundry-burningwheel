@@ -1,14 +1,15 @@
 {
-    "include": ["scripts/**/*.ts", "module/**/*.ts", "types/*.d.ts"],
-    "exclude": ["node_modules", "node_modules/foundry-pc-types/types/framework/collection.d.ts"],
+    "include": ["scripts/**/*.ts", "module/**/*.ts", "types/**/*.d.ts"],
+    "exclude": [ "node_modules" ],
     "compilerOptions": {
         "sourceMap": true,
         "types": [
-            "foundry-pc-types",
-            "select2"
+            "@league-of-foundry-developers/foundry-vtt-types",
+            "select2",
+            "handlebars"
         ],
-        "typeRoots": [ "./types" ],
-		"target": "ES2017",
+        "typeRoots": [ "./types", "./types/collections" ],
+		"target": "ES2020",
 		"lib": [
 			"DOM",
 			"es2020"

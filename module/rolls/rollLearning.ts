@@ -25,11 +25,11 @@ import { buildHelpDialog } from "../dialogs/buildHelpDialog.js";
 export async function handleLearningRollEvent(rollOptions: LearningRollEventOptions): Promise<unknown> {
     const actor = rollOptions.sheet.actor;
     const skillId = rollOptions.target.dataset.skillId || "";
-    const skill = (rollOptions.sheet.actor.getOwnedItem(skillId) as Skill);
+    const skill = (rollOptions.sheet.actor.items.get(skillId) as Skill);
     return handleLearningRoll({ actor, skill, ...rollOptions});
 }
 
-export function handleLearningRoll({ actor, skill, extraInfo, dataPreset, onRollCallback}: LearningRollOptions): Promise<unknown> | Application {
+export function handleLearningRoll({ actor, skill, extraInfo, dataPreset, onRollCallback}: LearningRollOptions): unknown {
     if (skill.data.data.root2) {
         return new Dialog({
             title: "Pick Root Stat",
@@ -47,7 +47,8 @@ export function handleLearningRoll({ actor, skill, extraInfo, dataPreset, onRoll
                         return buildLearningDialog({ actor, skill, statName: skill.data.data.root2, extraInfo, dataPreset, onRollCallback });
                     }
                 }
-            }
+            },
+            default: "root1"
         }).render(true);
     }
     return buildLearningDialog({ actor, skill, statName: skill.data.data.root1, extraInfo, dataPreset, onRollCallback });
@@ -116,7 +117,8 @@ async function buildLearningDialog({ skill, statName, actor, extraInfo, dataPres
                     callback: async (dialogHtml: JQuery) =>
                         learningRollCallback(dialogHtml, skill, statName, actor, extraInfo, onRollCallback)
                 }
-            }
+            },
+            default: "roll"
         }).render(true)
     );
 }
@@ -156,7 +158,7 @@ async function learningRollCallback(
 
     if (skill.data.data.tools) {
         const toolkitId = extractSelectString(dialogHtml, "toolkitId") || '';
-        const tools = actor.getOwnedItem(toolkitId) as Possession;
+        const tools = actor.items.get(toolkitId) as Possession;
         if (tools) {
             const { expended, text } = await maybeExpendTools(tools);
             extraInfo = extraInfo ? `${extraInfo}${text}` : text;
@@ -209,7 +211,7 @@ async function advanceLearning(
         difficultyGroup: helpers.TestString,
         isSuccessful: boolean,
         fr: RerollData | undefined,
-        cb: (fr?: RerollData) => Promise<Entity>) {
+        cb: (fr?: RerollData) => Promise<ChatMessage | null>) {
     switch (difficultyGroup) {
         default:
             return advanceBaseStat(skill, owner, statName, difficultyGroup, isSuccessful, fr, cb);
@@ -229,7 +231,8 @@ async function advanceLearning(
                         label: "Apply as Difficult",
                         callback: async () => advanceBaseStat(skill, owner, statName, "Difficult", isSuccessful, fr, cb)
                     }
-                }
+                },
+                default: "skill"
             });
             return dialog.render(true);
     }
@@ -242,7 +245,7 @@ async function advanceBaseStat(
         difficultyGroup: helpers.TestString,
         isSuccessful: boolean,
         fr: RerollData | undefined,
-        cb: (fr?: RerollData) => Promise<Entity>) {
+        cb: (fr?: RerollData) => Promise<ChatMessage | null>) {
 
     const accessor = `data.${statName.toLowerCase()}`;
     const rootStat = getProperty(owner, `data.${accessor}`);
@@ -259,7 +262,7 @@ async function advanceBaseStat(
 async function advanceLearningProgress(
         skill: Skill,
         fr: RerollData | undefined,
-        cb: (fr?: RerollData) => Promise<Entity>) {
+        cb: (fr?: RerollData) => Promise<ChatMessage | null>) {
     skill.addTest("Routine");
     return cb(fr);
 }

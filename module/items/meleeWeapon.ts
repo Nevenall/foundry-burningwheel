@@ -1,18 +1,19 @@
-import { BWActor } from "../actors/BWActor.js";
 import { BWItem, BWItemData, DisplayClass, HasPointCost } from "./item.js";
 import * as helpers from "../helpers.js";
 import { QualityString } from "../constants.js";
 import { translateWoundValue } from "../helpers.js";
+import { BWActorData } from "../actors/BWActor.js";
 
-export class MeleeWeapon extends BWItem {
+export class MeleeWeapon extends BWItem<MeleeWeaponRootData> {
     prepareData(): void {
         super.prepareData();
-        if (this.actor) {
-            let power = this.actor.data.data.power.exp;
-            if (this.actor.data.data.power.shade === "G") {
+        const actorData = this.actor && this.actor.data as unknown as BWActorData;
+        if (actorData) {
+            let power = actorData.data.power.exp;
+            if (actorData.data.power.shade === "G") {
                 power += 2;
             }
-            if (this.actor.data.data.power.shade === "W") {
+            if (actorData.data.power.shade === "W") {
                 power += 3;
             }
             Object.values(this.data.data.attacks || []).forEach(ad => {
@@ -25,7 +26,7 @@ export class MeleeWeapon extends BWItem {
         this.data.data.cssClass = "equipment-weapon";
     }
 
-    getWeaponMessageData(attackIndex: number): string {
+    async getWeaponMessageData(attackIndex: number): Promise<string> {
         const element = document.createElement("div");
         element.className = "weapon-extra-info";
         element.appendChild(helpers.DivOfText(`${this.name} ${this.data.data.attacks[attackIndex].attackName}`, "ims-title shade-black"));
@@ -44,15 +45,11 @@ export class MeleeWeapon extends BWItem {
         element.appendChild(helpers.DivOfText(this.data.data.attacks[attackIndex].weaponLength.titleCase()));
         return element.outerHTML;
     }
-    
-    get actor(): BWActor | null {
-        return super.actor as BWActor | null;
-    }
 
     data: MeleeWeaponRootData;
 }
 
-export interface MeleeWeaponRootData extends BWItemData {
+export interface MeleeWeaponRootData extends BWItemData<MeleeWeaponData> {
     data: MeleeWeaponData;
 }
 

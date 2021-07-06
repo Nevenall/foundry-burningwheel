@@ -32,11 +32,11 @@ export async function handleNpcWeaponRollEvent({ target, sheet, dataPreset }: Np
     if (!skillId) {
         return notifyError("No Weapon Skill", "No Weapon Skill Chosen. Set the sheet into edit mode and pick a Martial skill to use with this weapon.");
     }
-    const skill = sheet.actor.getOwnedItem(skillId) as Skill;
-    const weapon = sheet.actor.getOwnedItem(itemId) as MeleeWeapon | RangedWeapon;
+    const skill = sheet.actor.items.get(skillId) as Skill;
+    const weapon = sheet.actor.items.get(itemId) as MeleeWeapon | RangedWeapon;
     const attackIndex = parseInt(target.dataset.attackIndex as string);
     return handleNpcWeaponRoll({
-        actor: sheet.actor as BWActor & Npc,
+        actor: sheet.actor as Npc,
         weapon,
         skill,
         attackIndex,
@@ -49,8 +49,8 @@ export async function handleNpcWeaponRoll({actor, weapon, skill, attackIndex, da
         return notifyError("Missing Weapon", "The weapon that is being cast appears to be missing from the character sheet.");
     }
     const extraInfo = weapon.type === "melee weapon" ? 
-        (weapon as MeleeWeapon).getWeaponMessageData(attackIndex || 0) :
-        (weapon as RangedWeapon).getWeaponMessageData();
+        await (weapon as MeleeWeapon).getWeaponMessageData(attackIndex || 0) :
+        await (weapon as RangedWeapon).getWeaponMessageData();
     return handleNpcSkillRoll({actor, skill, extraInfo, dataPreset});
 }
 
@@ -60,8 +60,8 @@ export async function handleNpcSpellRollEvent({ target, sheet, dataPreset }: Npc
     if (!skillId) {
         return notifyError("No Sorcerous Skill", "No Casting Skill Chosen. Set the sheet into edit mode and pick a Sorcerous skill to use with this weapon.");
     }
-    const skill = sheet.actor.getOwnedItem(skillId) as Skill;
-    const spell = sheet.actor.getOwnedItem(itemId) as Spell;
+    const skill = sheet.actor.items.get(skillId) as Skill;
+    const spell = sheet.actor.items.get(itemId) as Spell;
     return handleNpcSpellRoll({ actor: sheet.actor, spell, skill, dataPreset });
 }
 
@@ -76,13 +76,13 @@ export async function handleNpcSpellRoll({ actor, spell, skill, dataPreset}: Npc
         dataPreset = { difficulty: obstacle };
     }
     dataPreset.useCustomDifficulty = dataPreset.showObstacles = dataPreset.showDifficulty = true;
-    const extraInfo = spell.getSpellMessageData();
+    const extraInfo = await spell.getSpellMessageData();
     return handleNpcSkillRoll({actor, skill, extraInfo, dataPreset});
 }
 
 export async function handleNpcSkillRollEvent({ target, sheet, extraInfo, dataPreset }: NpcEventHandlerOptions): Promise<unknown> {
     const actor = sheet.actor;
-    const skill = actor.getOwnedItem(target.dataset.skillId || "") as Skill;
+    const skill = actor.items.get(target.dataset.skillId || "") as Skill;
     return handleNpcSkillRoll({actor, skill, extraInfo, dataPreset});
 }
 
@@ -142,7 +142,8 @@ export async function handleNpcSkillRoll({ actor, skill, extraInfo, dataPreset}:
                             return handleNpcStatRoll(rollData);
                         }
                     }
-                }
+                },
+                default: "root1"
             }).render(true);
         }
         return handleNpcStatRoll(rollData);
@@ -181,14 +182,15 @@ export async function handleNpcSkillRoll({ actor, skill, extraInfo, dataPreset}:
                     callback: async (dialogHtml: JQuery) =>
                         skillRollCallback(dialogHtml, actor, skill, extraInfo)
                 }
-            }
+            },
+            default: "roll"
         }).render(true)
     );
 }
 
 async function skillRollCallback(
         dialogHtml: JQuery,
-        actor: BWActor & Npc,
+        actor: Npc,
         skill: Skill,
         extraInfo?: string) {
     const rollData = extractRollData(dialogHtml);
@@ -213,7 +215,7 @@ async function skillRollCallback(
 
     const fateReroll = buildRerollData({ actor, roll, itemId: skill.id, splitPoolRoll });
     const callons: RerollData[] = actor.getCallons(skill.name).map(s => {
-        return { label: s, ...buildRerollData({ actor, roll, splitPoolRoll, itemId: skill._id }) as RerollData };
+        return { label: s, ...buildRerollData({ actor, roll, splitPoolRoll, itemId: skill.id }) as RerollData };
     });
 
     // because artha isn't tracked individually, it doesn't matter what gets updated.

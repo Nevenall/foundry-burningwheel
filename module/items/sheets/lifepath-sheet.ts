@@ -1,9 +1,10 @@
 import { BWActor } from "../../actors/BWActor.js";
 import { DragData } from "../../helpers.js";
 import { BWItem } from "../item.js";
+import { Lifepath } from "../lifepath.js";
 import { BWItemSheet, BWItemSheetData } from "./bwItemSheet.js";
 
-export class LifepathSheet extends BWItemSheet {
+export class LifepathSheet extends BWItemSheet<BWItemSheetData, Lifepath> {
     getData(): BWItemSheetData {
         const data = super.getData();
         return data;
@@ -31,11 +32,11 @@ export class LifepathSheet extends BWItemSheet {
         if (data.type === "Item" && data.id) {
             let item: BWItem | undefined;
             if (data.pack) {
-                item = await (game.packs.find(p => p.collection === data.pack) as Compendium).getEntity(data.id) as BWItem;
+                item = await (game.packs?.find(p => p.collection === data.pack) as CompendiumCollection<BWItem>).getDocument(data.id) as BWItem;
             } else if (data.actorId) {
-                item = (game.actors.find((a: BWActor) => a._id === data.actorId) as BWActor).getOwnedItem(data.id) as BWItem;
+                item = (game.actors?.find((a: BWActor) => a.id === data.actorId) as BWActor).items.get(data.id) as BWItem;
             } else {
-                item = game.items.find((i: BWItem) => i.id === data.id) as BWItem;
+                item = game.items?.find((i: BWItem) => i.id === data.id) as BWItem;
             }
 
             if (item) {

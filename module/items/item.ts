@@ -15,6 +15,18 @@ import * as constants from "../constants.js";
 import { LifepathSheet } from "./sheets/lifepath-sheet.js";
 import { BWActor } from "../actors/BWActor.js";
 import { simpleBroadcast } from "../chat.js";
+import { SkillDataRoot } from "./skill.js";
+import { LifepathRootData } from "./lifepath.js";
+import { MeleeWeaponRootData } from "./meleeWeapon.js";
+import { AffiliationDataRoot } from "./affiliation.js";
+import { ArmorRootData } from "./armor.js";
+import { PossessionRootData } from "./possession.js";
+import { PropertyRootData } from "./property.js";
+import { RangedWeaponRootData } from "./rangedWeapon.js";
+import { RelationshipDataRoot } from "./relationship.js";
+import { ReputationDataRoot } from "./reputation.js";
+import { SpellDataRoot } from "./spell.js";
+import { TraitDataRoot } from "./trait.js";
 
 export * from "./sheets/affiliation-sheet.js";
 export * from "./sheets/armor-sheet.js";
@@ -30,23 +42,28 @@ export * from "./sheets/skill-sheet.js";
 export * from "./sheets/trait-sheet.js";
 export * from "./sheets/spell-sheet.js";
 
-export class BWItem extends Item<BWItemData> {
-    async generateChatMessage(speaker: BWActor): Promise<Entity> {
+export class BWItem<T extends BWItemData = BWItemDataTypes> extends Item<T> {
+    async generateChatMessage(speaker: BWActor): Promise<ChatMessage | null> {
         return simpleBroadcast({ title: this.name, mainText: `Type - ${this.data.type}` }, speaker);
     }
     prepareData(): void {
         super.prepareData();
-        this.data.hasOwner = !!this.actor;
+        this.data.hasOwner = !!(this.actor && this.actor.data);
     }
-
-    data: BWItemData;
 
     get type(): ItemType {
         return super.type as ItemType;
     }
+
+    async _preCreate(data: Partial<BWItemData>, options: FoundryDocument.CreateOptions, user: User): Promise<void> {
+        await super._preCreate(data as T, options, user);
+        if (data.type && this.data._source.img === "icons/svg/item-bag.svg") {
+            this.data._source.img = constants.defaultImages[data.type];
+        }
+    }
 }
 
-export interface BWItemData extends ItemData {
+export interface BWItemData<T = unknown> extends Item.Data<T> {
     type: ItemType;
     hasOwner: boolean;
 }
@@ -145,3 +162,7 @@ export type ItemType =
     "property" | "relationship" | "melee weapon" |
     "ranged weapon" | "reputation" | "affiliation"
     | "spell" | "lifepath";
+
+export type BWItemDataTypes = BWItemData | SkillDataRoot | LifepathRootData | MeleeWeaponRootData
+    | AffiliationDataRoot | ArmorRootData | PossessionRootData | PropertyRootData | RangedWeaponRootData
+    | RelationshipDataRoot | ReputationDataRoot | SpellDataRoot | TraitDataRoot;

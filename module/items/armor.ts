@@ -2,7 +2,7 @@ import { BWItem, BWItemData, DisplayClass, HasPointCost } from "./item.js";
 import { rollDice } from "../rolls/rolls.js";
 import { ShadeString } from "../helpers.js";
 
-export class Armor extends BWItem {
+export class Armor extends BWItem<ArmorRootData> {
     prepareData(): void {
         super.prepareData();
         this.data.data.cssClass = "equipment-armor";
@@ -16,8 +16,6 @@ export class Armor extends BWItem {
         this.data.data.rightLegDisplayClass = this.calculateDisplayClass(dice, this.data.data.damageRightLeg);
         this.data.data.shieldDisplayClass = this.calculateDisplayClass(dice, this.data.data.damageShield);
     }
-
-    data: ArmorRootData;
 
     calculateDisplayClass(dice: number, locationDice: string): string {
         if (parseInt(locationDice) >= dice) {
@@ -38,28 +36,28 @@ export class Armor extends BWItem {
             case "run of the mill":
                 newDamage = Math.min(this.data.data.dice, damage + 1);                
                 updateData[locationAccessor] = newDamage;
-                await this.update(updateData, null);
+                await this.update(updateData);
                 return new Promise(r => r(1));
             case "superior":
                 const reroll = await rollDice(num1s, false, "B");
                 if (reroll && reroll.dice[0].results.filter(r => r.result === 1).length) {
                     newDamage = Math.min(this.data.data.dice, damage + 1);                
                     updateData[locationAccessor] = newDamage;
-                    await this.update(updateData, null);
+                    await this.update(updateData);
                     return new Promise(r => r(1));
                 }
                 return new Promise(r => r(0));
             default:
                 newDamage = Math.min(this.data.data.dice, damage + num1s);
                 updateData[locationAccessor] = newDamage;
-                await this.update(updateData, null);
+                await this.update(updateData);
                 return new Promise(r => r(num1s));
         }
     }
 }
 
-export interface ArmorRootData extends BWItemData {
-    data: ArmorData;
+export interface ArmorRootData extends BWItemData<ArmorData> {
+    type: "armor"
 }
 
 export interface ArmorData extends DisplayClass, HasPointCost {

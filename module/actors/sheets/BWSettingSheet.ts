@@ -1,33 +1,36 @@
 import { BWItem } from "../../items/item.js";
 import { Lifepath, LifepathRootData } from "../../items/lifepath.js";
-import { BWSetting } from "../BWSetting.js";
+import { BWSetting, SettingData } from "../BWSetting.js";
 import * as helpers from "../../helpers.js";
 
-export class BWSettingSheet extends ActorSheet {
+export class BWSettingSheet extends ActorSheet<BWSettingSheetData> {
     get template(): string {
         return "systems/burningwheel/templates/setting-sheet.hbs";
     }
     get actor(): BWSetting {
         return super.actor as BWSetting;
     }
-    static get defaultOptions(): FormApplicationOptions {
+    static get defaultOptions(): BaseEntitySheet.Options {
         return mergeObject(super.defaultOptions, {
             classes:  ["bw-app"],
             width: 600
         });
     }
 
-    getData(): BWSettingData {
-        const data = super.getData() as BWSettingData;
-        data.lifepaths = (Array.from(this.actor.items.values()) as Lifepath[]).map(i => i.data).sort((a, b) => a.data.order - b.data.order);
-        return data;
+    getData(): BWSettingSheetData {
+        return {
+            actor: this.actor,
+            data: this.actor.data.data,
+            lifepaths: (Array.from(this.actor.items.values()) as Lifepath[]).map(i => i.data).sort((a, b) => a.data.order - b.data.order),
+            editable: this.isEditable
+        };
     }
 
     activateListeners(html: JQuery): void {
         super.activateListeners(html);
         html.find('.lifepath[draggable="true"]').on('dragstart', (e) => {
             const actor = this.actor;
-            const item = actor.getOwnedItem(e.target.dataset.id || "") as BWItem;
+            const item = actor.items.get(e.target.dataset.id || "") as BWItem;
             const dragData: helpers.ItemDragData = {
                 actorId: actor.id,
                 id: item.id,
@@ -45,12 +48,12 @@ export class BWSettingSheet extends ActorSheet {
             e.preventDefault();
             e.stopPropagation();
             const id = e.target.dataset.id || "";
-            this.actor.deleteOwnedItem(id);
+            this.actor.deleteEmbeddedDocuments("Item", [id]);
         });
 
         html.find('.lifepath').on('click', (e) => {
             const id = e.currentTarget.dataset.id || "";
-            this.actor.getOwnedItem(id)?.sheet.render(true);
+            this.actor.items.get(id)?.sheet?.render(true);
         });
 
         const dropAreas = html.find('.drop-area').toArray().map(e => $(e));
@@ -77,9 +80,9 @@ export class BWSettingSheet extends ActorSheet {
                     }
                 }
             }
-        }).on('dragenter', _ => {
+        }).on('dragenter', () => {
             enterCount ++;
-        }).on('dragleave', _ => {
+        }).on('dragleave', () => {
             enterCount --;
             if (!enterCount) {
                 activeDropArea?.removeClass("show-drop");
@@ -118,7 +121,7 @@ export class BWSettingSheet extends ActorSheet {
         const sortedItems = (Array.from(this.actor.items.values()) as Lifepath[]).sort((a, b) => a.data.data.order - b.data.data.order);
         if (dragData.actorId === this.actor.id) {
             // we need to just update the index of the entry
-            const item = this.actor.getOwnedItem(dragData.id || "") as Lifepath;
+            const item = this.actor.items.get(dragData.id || "") as Lifepath;
             await item.update({ "data.order": index }, {});
         } else {
             // we need to get the item data and add it to the setting sheet
@@ -126,17 +129,17 @@ export class BWSettingSheet extends ActorSheet {
             if (dragData.data) {
                 itemData = dragData.data as LifepathRootData;
             } else if (dragData.pack) {
-                itemData = (await (game.packs.find(p => p.collection === dragData.pack) as Compendium).getEntity(dragData.id || "")).data as LifepathRootData;
+                itemData = (await (game.packs?.find(p => p.collection === dragData.pack) as CompendiumCollection).getDocument(dragData.id || ""))?.data as LifepathRootData;
             } else if (dragData.actorId) {
-                itemData = (game.actors.find((a: BWSetting) => a._id === dragData.actorId)).getOwnedItem(dragData.id).data as LifepathRootData;
+                itemData = (game.actors?.find((a: FoundryDocument) => a.id === dragData.actorId))?.items.get(dragData.id || "")?.data as LifepathRootData;
             } else {
-                itemData = game.items.find((i: BWItem) => i.id === dragData.id).data as LifepathRootData;
+                itemData = game.items?.find((i: BWItem) => i.id === dragData.id)?.data as LifepathRootData;
             }
 
             // if our item is actually a lifepath we need to add it, otherwise abort.
             if (itemData.type === "lifepath") {
                 itemData.data.order = index;
-                await this.actor.createOwnedItem(itemData, { keepOrder: true });
+                await this.actor.createEmbeddedDocuments("Item", [itemData]);
             } else {
                 return;
             }
@@ -147,19 +150,23 @@ export class BWSettingSheet extends ActorSheet {
         for(let i = 0; i < index; i ++) {
             const item = sortedItems[i];
             if (item.id !== dragData.id) {
-                updateData.push( { "_id": sortedItems[i]._id, 'data.order': i });
+                updateData.push( { "_id": sortedItems[i].id, 'data.order': i });
             }
         }
         for (let i = index; i < sortedItems.length; i ++) {
             const item = sortedItems[i];
             if (item.id !== dragData.id) {
-                updateData.push( { "_id": sortedItems[i]._id, 'data.order': i + 1 });
+                updateData.push( { "_id": sortedItems[i].id, 'data.order': i + 1 });
             }
         }
-        this.actor.updateEmbeddedEntity("OwnedItem", updateData);
+        // this.actor.updateEmbeddedEntity("OwnedItem", updateData);
+        this.actor.updateEmbeddedDocuments("Item", updateData);
     }
 }
 
-export interface BWSettingData extends ActorSheetData {
+export interface BWSettingSheetData {
+    actor: BWSetting;
+    data: SettingData;
     lifepaths: LifepathRootData[];
+    editable: boolean;
 }

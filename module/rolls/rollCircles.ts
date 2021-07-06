@@ -20,7 +20,7 @@ export async function handleCirclesRollEvent({ target, sheet, dataPreset }: Even
     const stat = getProperty(sheet.actor.data, "data.circles") as Ability;
     let circlesContact: Relationship | undefined;
     if (target.dataset.relationshipId) {
-        circlesContact = sheet.actor.getOwnedItem(target.dataset.relationshipId) as Relationship;
+        circlesContact = sheet.actor.items.get<Relationship>(target.dataset.relationshipId);
     }
     const actor = sheet.actor;
 
@@ -66,7 +66,8 @@ export async function handleCirclesRoll({ actor, stat, dataPreset, circlesContac
                     callback: async (dialogHtml: JQuery) =>
                         circlesRollCallback(dialogHtml, stat, actor, circlesContact)
                 }
-            }
+            },
+            default: "roll"
         }).render(true)
     );
 }
@@ -119,12 +120,12 @@ async function circlesRollCallback(
     // increment relationship tracking values...
     if (contact && contact.data.data.building) {
         const progress = (contact.data.data.buildingProgress || 0) + 1;
-        contact.update({"data.buildingProgress": progress }, null);
+        contact.update({"data.buildingProgress": progress });
         if (progress >= 10 - (contact.data.data.aptitude || 10)) {
             Dialog.confirm({
                 title: "Relationship Building Complete",
                 content: `<p>Relationship with ${contact.name} has been built enough to advance. Do so?</p>`,
-                yes: () => { contact.update({"data.building": false}, null); },
+                yes: () => { contact.update({"data.building": false}); },
                 no: () => { return; }
             });
         }

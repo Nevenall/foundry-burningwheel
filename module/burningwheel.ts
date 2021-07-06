@@ -1,9 +1,9 @@
 import { BWActor } from "./actors/BWActor.js";
 import { BWCharacterSheet } from "./actors/sheets/BWCharacterSheet.js";
-import { RegisterItemSheets } from "./items/item.js";
+import { BWItem, RegisterItemSheets } from "./items/item.js";
 
 import { hideChatButtonsIfNotOwner, onChatLogRender } from "./chat.js";
-import { ShadeString, slugify, translateWoundValue } from "./helpers.js";
+import { DragData, ShadeString, slugify, translateWoundValue } from "./helpers.js";
 import { migrateData } from "./migration/migration.js";
 import { registerSystemSettings } from "./settings.js";
 import { preloadHandlebarsTemplates } from "./templates.js";
@@ -17,9 +17,10 @@ import { BWSettingSheet } from "./actors/sheets/BWSettingSheet.js";
 import * as dialogs from "./dialogs/index.js";
 
 Hooks.once("init", async () => {
-    CONFIG.Actor.entityClass = actorConstructor;
-    CONFIG.Item.entityClass = itemConstructor;
-    game.burningwheel = {};
+    CONFIG.Actor.documentClass = actorConstructor;
+    CONFIG.Item.documentClass = itemConstructor;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    game.burningwheel = {} as any;
 
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet(constants.systemName, BWCharacterSheet, {
@@ -145,7 +146,7 @@ function registerHelpers() {
 Hooks.on("renderChatLog", (_app, html: JQuery, _data) => onChatLogRender(html));
 Hooks.on("renderChatMessage", (app, html, data) => hideChatButtonsIfNotOwner(app, html, data));
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-Hooks.on("createOwnedItem", (actor: BWActor, item: ItemData, _options: any, userId: string) => {
-    if (actor.data.type !== "setting") { actor.processNewItem(item, userId); }
+Hooks.on("createItem", (item: BWItem, _options: any, userId: string) => {
+    if (item.parent && (item.parent.data.type !== "setting")) { (item.parent as BWActor).processNewItem(item.data, userId); }
 });
-Hooks.on("hotbarDrop", (_bar, data, slot) => CreateBurningWheelMacro(data, slot));
+Hooks.on("hotbarDrop", (_bar, data, slot) => CreateBurningWheelMacro(data as DragData, slot));

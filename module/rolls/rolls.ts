@@ -132,7 +132,7 @@ export function buildRerollData({ actor, roll, accessor, splitPoolRoll, itemId }
     const coreData: RerollData = {
         dice: roll.dice[0].results.map(r => r.result).join(","),
         splitDice: splitPoolRoll?.dice[0].results.map(r => r.result).join(",") || undefined,
-        actorId: actor._id,
+        actorId: actor.id,
     };
     if (accessor) {
         return {
@@ -219,13 +219,12 @@ export async function rollDice(numDice: number, open = false, shade: helpers.Sha
         return;
     } else {
         const tgt = shade === 'B' ? '3' : (shade === 'G' ? '2' : '1');
-        const roll = new Roll(`${numDice}d6${open?'x6':''}cs>${tgt}`).roll();
+        const roll = new Roll(`${numDice}d6${open ? 'x6' : ''}cs>${tgt}`).roll({ async: true });
         if (game.dice3d) {
-            return game.dice3d.showForRoll(roll, game.user, true, null, false)
-                .then(_ => helpers.sleep(500))
+            return game.dice3d.showForRoll(await roll, game.user, true, null, false)
                 .then(_ => roll);
         }
-        return new Promise(r => r(roll));
+        return roll;
     }
 }
 
@@ -243,7 +242,7 @@ export function getRollNameClass(open: boolean, shade: helpers.ShadeString): str
     return css;
 }
 
-export async function getNoDiceErrorDialog(numDice: number): Promise<Application> {
+export async function getNoDiceErrorDialog(numDice: number): Promise<unknown> {
     return helpers.notifyError("Too Few Dice",
         `Too few dice to be rolled. Must roll a minimum of one. Currently, bonuses and penalties add up to ${numDice}`);
 }
@@ -362,13 +361,13 @@ export function extractRollData(html: JQuery): RollData {
     };
 }
 
-export async function rollWildFork(numDice: number, shade: helpers.ShadeString = 'B'): Promise<Die | undefined> {
+export async function rollWildFork(numDice: number, shade: helpers.ShadeString = 'B'): Promise<DiceTerm | undefined> {
     if (numDice <= 0) {
         return;
     }
     const tgt = shade === 'B' ? 3 : (shade === 'G' ? 2 : 1);
     const die = new AstrologyDie({ diceNumber: numDice, target: tgt });
-    die.evaluate();
+    const result = die.evaluate();
 
     if (game.dice3d) {
         game.dice3d.show({
@@ -385,7 +384,7 @@ export async function rollWildFork(numDice: number, shade: helpers.ShadeString =
             }]
         });
     }
-    return new Promise(r => r(die));
+    return result;
 }
 
 export async function getSplitPoolRoll(numDice: number, open: boolean, shade: helpers.ShadeString): Promise<Roll|undefined> {

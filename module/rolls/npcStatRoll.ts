@@ -1,4 +1,4 @@
-import { BWActor, TracksTests } from "../actors/BWActor.js";
+import { TracksTests } from "../actors/BWActor.js";
 
 import * as helpers from "../helpers.js";
 import {
@@ -78,14 +78,15 @@ export async function handleNpcStatRoll({ dice, shade, open, statName, extraInfo
                     callback: async (dialogHtml: JQuery) =>
                         statRollCallback(dialogHtml, actor, statName, shade, open, extraInfo)
                 }
-            }
+            },
+            default: "roll"
         }).render(true)
     );
 }
 
 async function statRollCallback(
         dialogHtml: JQuery,
-        actor: BWActor & Npc,
+        actor: Npc,
         name: string,
         shade: helpers.ShadeString,
         open: boolean,
@@ -151,7 +152,7 @@ interface NpcStatDialogData extends RollDialogData {
 }
 
 export interface NpcStatRollOptions extends RollOptions {
-    actor: BWActor & Npc;
+    actor: Npc;
     dice: number;
     shade: helpers.ShadeString;
     open: boolean;

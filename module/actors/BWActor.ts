@@ -1,8 +1,8 @@
 import { ShadeString, StringIndexedObject } from "../helpers.js";
-import { DisplayClass, ItemType, BWItemData, BWItem } from "../items/item.js";
+import { DisplayClass, ItemType, BWItemData, BWItem, BWItemDataTypes } from "../items/item.js";
 import { SkillDataRoot } from "../items/skill.js";
 import * as constants from "../constants.js";
-import { ArmorRootData } from "../items/armor.js";
+import { Armor } from "../items/armor.js";
 import { PossessionRootData } from "../items/possession.js";
 import { ReputationDataRoot } from "../items/reputation.js";
 import { TraitDataRoot, Trait } from "../items/trait.js";
@@ -10,20 +10,20 @@ import { BWCharacterData } from "./BWCharacter.js";
 import { NpcData } from "./Npc.js";
 import { AffiliationDataRoot } from "../items/affiliation.js";
 
-export class BWActor extends Actor<Common> {
-    data!: BWActorDataRoot;
+export class BWActor<T extends BWActorData = BWActorData> extends Actor<T, BWItem> {
+    data: T;
 
     readonly batchAdd = {
         task: -1,
-        items: [] as NewItemData[]
+        items: [] as (NewItemData & Partial<BWItemDataTypes>)[] 
     };
 
-    private async _handleBatchAdd(): Promise<unknown> {
+    private async _handleBatchAdd(): Promise<FoundryDocument[]> {
         const items = this.batchAdd.items;
         this.batchAdd.items = [];
         clearTimeout(this.batchAdd.task);
         this.batchAdd.task = -1;
-        return this.createOwnedItem(items);
+        return this.createEmbeddedDocuments("Item", items);
     }
 
     batchAddItem(item: NewItemData): void {
@@ -33,11 +33,7 @@ export class BWActor extends Actor<Common> {
         this.batchAdd.items.push(item);
     }
 
-    getOwnedItem(id: string): BWItem | null {
-        return super.getOwnedItem(id) as BWItem | null;
-    }
-
-    async processNewItem(item: ItemData, userId: string): Promise<unknown> {
+    async processNewItem(item: Item.Data, userId: string): Promise<unknown> {
         if (game.userId !== userId) {
             // this item has been added by someone else.
             return;
@@ -145,7 +141,8 @@ export class BWActor extends Actor<Common> {
         this.data.fightWeapons = [];
         
         if (this.data.items) {
-            this.data.items.forEach(i => {
+            this.data.items.forEach(({ data }) => {
+                const i: BWItemData = data;
                 switch (i.type) {
                     case "skill":
                         if (!(i as SkillDataRoot).data.learning &&
@@ -158,11 +155,11 @@ export class BWActor extends Actor<Common> {
                         }
                         if ((i as SkillDataRoot).data.skilltype === "martial" &&
                             !(i as SkillDataRoot).data.training) {
-                            this.data.martialSkills.push(i);
+                            this.data.martialSkills.push(i as SkillDataRoot);
                         } else if ((i as SkillDataRoot).data.skilltype === "sorcerous") {
-                            this.data.sorcerousSkills.push(i);
+                            this.data.sorcerousSkills.push(i as SkillDataRoot);
                         } else if ((i as SkillDataRoot).data.skilltype === "social") {
-                            this.data.socialSkills.push(i);
+                            this.data.socialSkills.push(i as SkillDataRoot);
                         }
                         break;
                     case "reputation":
@@ -199,7 +196,7 @@ export class BWActor extends Actor<Common> {
                         break;
                     case "possession":
                         if ((i as PossessionRootData).data.isToolkit) {
-                            this.data.toolkits.push(i);
+                            this.data.toolkits.push(i as PossessionRootData);
                         }
                         break;
                     case "spell":
@@ -229,26 +226,45 @@ export class BWActor extends Actor<Common> {
     }
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
-    _onCreate(data: any, options: any, userId: string, context: any): void {
-        super._onCreate(data, options, userId, context);
-        if (this.data.items.length) {
+    _onCreate(data: any, options: any, userId: string): void {
+        super._onCreate(data, options, userId);
+        if (this.data.items.contents.length) {
             return; // this is most likely a duplicate of an existing actor. we don't need to add default items.
         }
         if (game.userId !== userId) {
             // we aren't the person who created this actor
             return;
         }
-        this.createOwnedItem([
-            { name: "Instinct 1", type: "instinct", data: {}, img: constants.defaultImages.instinct},
-            { name: "Instinct 2", type: "instinct", data: {}, img: constants.defaultImages.instinct},
-            { name: "Instinct 3", type: "instinct", data: {}, img: constants.defaultImages.instinct},
-            { name: "Instinct Special", type: "instinct", data: {}, img: constants.defaultImages.instinct},
-            { name: "Belief 1", type: "belief", data: {}, img: constants.defaultImages.belief},
-            { name: "Belief 2", type: "belief", data: {}, img: constants.defaultImages.belief},
-            { name: "Belief 3", type: "belief", data: {}, img: constants.defaultImages.belief},
-            { name: "Belief Special", type: "belief", data: {}, img: constants.defaultImages.belief},
-            { ...constants.bareFistData, img: "icons/equipment/hand/gauntlet-simple-leather-steel.webp" }
-        ]);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (this.data as any).update({
+            items: [
+                { name: "Instinct 1", type: "instinct", data: {}, img: constants.defaultImages.instinct },
+                { name: "Instinct 2", type: "instinct", data: {}, img: constants.defaultImages.instinct },
+                { name: "Instinct 3", type: "instinct", data: {}, img: constants.defaultImages.instinct },
+                { name: "Instinct Special", type: "instinct", data: {}, img: constants.defaultImages.instinct },
+                { name: "Belief 1", type: "belief", data: {}, img: constants.defaultImages.belief },
+                { name: "Belief 2", type: "belief", data: {}, img: constants.defaultImages.belief },
+                { name: "Belief 3", type: "belief", data: {}, img: constants.defaultImages.belief },
+                { name: "Belief Special", type: "belief", data: {}, img: constants.defaultImages.belief },
+                { ...constants.bareFistData, img: "icons/skills/melee/unarmed-punch-fist-yellow-red.webp" }
+            ]
+        });
+    }
+
+    async _preCreate(actor: Partial<T>, _options: FoundryDocument.CreateOptions, user: User): Promise<void> {
+        await super._preCreate(actor, _options, user);
+        if (actor.type === 'character' || actor.type === 'npc') {
+            this.data.token.update({
+                disposition: CONST.TOKEN_DISPOSITIONS.NEUTRAL,
+                vision: true
+            });
+        }
+        if (actor.type === 'character' || actor.type === 'setting') {
+            this.data.token.update({
+                actorLink: true,
+                disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY
+            });
+        }
     }
 
     private _calculateClumsyWeight() {
@@ -268,9 +284,9 @@ export class BWActor extends Actor<Common> {
 
         const charData = this.data.type === "character" ? this.data.data as BWCharacterData : undefined;
 
-        this.data.items.filter(i => i.type === "armor" && (i as unknown as ArmorRootData).data.equipped)
+        this.data.items.filter<Armor>(i => (i.type === "armor" && i.data.data.equipped))
             .forEach(i => {
-            const a = i as unknown as ArmorRootData;
+            const a = i.data;
             if (a.data.hasHelm) {
                     clumsyWeight.helmetObPenalty = a.data.perceptionObservationPenalty || 0;
             }
@@ -344,57 +360,19 @@ export class BWActor extends Actor<Common> {
     }
 
     public updateArthaForSkill(_skillId: string, persona: number, deeds: number): void {
-        this.update({
-            "data.deeds": this.data.data.deeds - (deeds ? 1 : 0),
-            "data.persona": this.data.data.persona - persona,
-        });
+        const updateData = {};
+        updateData["data.deeds"] = this.data.data.deeds - (deeds ? 1 : 0);
+        updateData["data.persona"] = this.data.data.persona - persona;
+        this.update(updateData);
     }
 
-    public updateArthaForStat(_accessor: string, persona: number, deeds: number): void {
-        this.update({
-            "data.deeds": this.data.data.deeds - (deeds ? 1 : 0),
-            "data.persona": this.data.data.persona - persona,
-        });
-    }
-
-    async createOwnedItem(itemData: NewItemData | NewItemData[], options?: Record<string, unknown>): Promise<BWItem> {
-        // we don't add lifepaths to actors. they are simply a data structure for holding lifepath info for settings and the character burner
-        if (Array.isArray(itemData)) {
-            itemData = itemData.filter(id => id.type !== "lifepath");
-            return super.createOwnedItem(itemData, options) as  Promise<BWItem>;
-        }
-        if (itemData.type !== "lifepath") {
-            return super.createOwnedItem(itemData) as Promise<BWItem>;
-        }
-        return super.createOwnedItem([], options) as Promise<BWItem>;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
-    async createEmbeddedEntity(entityType: string, data: NewItemData| NewItemData[], options?: any): Promise<this> {
-        // we don't add lifepaths to normal actors. they are simply a data structure for holding lifepath info for settings and the character burner
-        if (Array.isArray(data)) {
-            data = data.filter(id => id.type !== "lifepath");
-            return super.createEmbeddedEntity(entityType, data, options);
-        }
-        if (data.type !== 'lifepath') {
-            return super.createEmbeddedEntity(entityType, data, options);
-        }
-        return this;
+    public updateArthaForStat(accessor: string, persona: number, deeds: number): void {
+        const updateData = {};
+        updateData["data.deeds"] = this.data.data.deeds - (deeds ? 1 : 0);
+        updateData["data.persona"] = this.data.data.persona - persona;
+        this.update(updateData);
     }
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-Hooks.on('preCreateActor', (actor: any, _options) => {
-    actor.token = actor.token || {};
-    if (actor.type === 'character' || actor.type === 'setting') {
-        actor.token.actorLink = true;
-        actor.token.disposition = CONST.TOKEN_DISPOSITIONS.FRIENDLY;
-    }
-    if (actor.type === 'character' || actor.type === 'npc') {
-        actor.token.disposition = CONST.TOKEN_DISPOSITIONS.NEUTRAL;
-        actor.token.vision = true;
-    }
-});
 
 export interface Common {
     will: Ability;
@@ -420,13 +398,13 @@ export interface Common {
     willTax: number;
     forteTax: number;
 
-    resourcesTax: string;
+    resourcesTax: number;
     fate: number;
     persona: number;
     deeds: number;
 }
 
-export interface BWActorDataRoot extends ActorData<Common> {
+export interface BWActorData<T extends Common = Common> extends Actor.Data<T, BWItem> {
     aptitudeModifiers: StringIndexedObject<number>;
     toolkits: PossessionRootData[];
     martialSkills: SkillDataRoot[];
@@ -436,7 +414,7 @@ export interface BWActorDataRoot extends ActorData<Common> {
 
     circlesMalus: { name: string, amount: number }[];
     circlesBonus: { name: string, amount: number }[];
-    items: BWItemData[];
+    items: DocumentCollection<BWItem>;
     forks: SkillDataRoot[];
     rollModifiers: { [rollName:string]: RollModifier[]; };
     callOns: { [rollName:string]: string[] };
@@ -445,6 +423,8 @@ export interface BWActorDataRoot extends ActorData<Common> {
     fightWeapons: BWItemData[];
 
     type: "character" | "npc" | "setting";
+
+    data: T
 }
 
 export interface Ability extends TracksTests, DisplayClass {

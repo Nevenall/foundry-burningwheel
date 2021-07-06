@@ -1,18 +1,27 @@
 import * as constants from "../../constants.js";
-export class BWItemSheet extends ItemSheet {
-    getData(): BWItemSheetData {
-        const data = super.getData() as BWItemSheetData;
-        data.showImage = game.settings.get(constants.systemName, constants.settings.itemImages);
-        return data;
+import { BWItem } from "../item.js";
+export class BWItemSheet<
+    SD extends BWItemSheetData = BWItemSheetData,
+    ID extends BWItem = BWItem> extends ItemSheet<SD, ID> {
+    
+    getData(): SD {
+        const data = {
+            showImage: game.settings.get(constants.systemName, constants.settings.itemImages) as boolean,
+            data: this.item.data.data,
+            item: this.item
+        };
+        return data as unknown as SD;
     }
 
-    static get defaultOptions(): FormApplicationOptions {
+    static get defaultOptions(): BaseEntitySheet.Options {
         return mergeObject(super.defaultOptions, {
             classes:  ["bw-app"]
         });
     }
 }
 
-export interface BWItemSheetData extends ItemSheetData {
+export interface BWItemSheetData<T = Item.Data['data']> {
     showImage: boolean;
+    data: T;
+    item: BWItem;
 }

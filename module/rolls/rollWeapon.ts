@@ -2,19 +2,18 @@ import { handleLearningRoll } from "./rollLearning.js";
 import { handleSkillRoll } from "./rollSkill.js";
 import * as helpers from "../helpers.js";
 import { EventHandlerOptions, mergePartials, RollDialogData, RollOptions } from "./rolls.js";
-import { BWActor } from "../actors/BWActor.js";
 import { BWCharacter } from "../actors/BWCharacter.js";
 import { RangedWeapon } from "../items/rangedWeapon.js";
 import { MeleeWeapon } from "../items/meleeWeapon.js";
 import { Skill } from "../items/skill.js";
 
-export function handleWeaponRollEvent({ target, sheet, dataPreset }: EventHandlerOptions): Promise<unknown> | Application {
-    const actor = sheet.actor as BWActor & BWCharacter;
+export function handleWeaponRollEvent({ target, sheet, dataPreset }: EventHandlerOptions): unknown {
+    const actor = sheet.actor as BWCharacter;
     const weaponId = target.dataset.weaponId;
     if (!weaponId) {
         throw Error("Malformed weapon roll button. Weapon ID must be specified");
     }
-    const weapon = sheet.actor.getOwnedItem(weaponId) as MeleeWeapon | RangedWeapon;
+    const weapon = sheet.actor.items.get<MeleeWeapon | RangedWeapon>(weaponId);
     if (!weapon) {
         return helpers.notifyError("No Matching Weapon",
             "The weapon used to roll this attack appears to no longer be present on the character.");
@@ -25,7 +24,7 @@ export function handleWeaponRollEvent({ target, sheet, dataPreset }: EventHandle
         return helpers.notifyError("No Skill Specified",
             "A skill must be specified in order for the weapon attack to be rolled. Please pick from a list of martial skills of the character.");
     }
-    const skill: Skill = sheet.actor.getOwnedItem(skillId) as Skill;
+    const skill = sheet.actor.items.get<Skill>(skillId);
     if (!skill) {
         throw Error("Provided skillID did not correspond to an owned skill.");
     }
@@ -39,7 +38,7 @@ export function handleWeaponRollEvent({ target, sheet, dataPreset }: EventHandle
 
 }
 
-export function handleWeaponRoll({ actor, weapon, attackIndex, skill, dataPreset}: WeaponRollOptions): Promise<unknown> | Application {
+export async function handleWeaponRoll({ actor, weapon, attackIndex, skill, dataPreset}: WeaponRollOptions): Promise<unknown> {
     const quality = (weapon as MeleeWeapon | RangedWeapon).data.data.quality;
 
     let weaponPreset: Partial<RollDialogData> = {};
@@ -53,9 +52,9 @@ export function handleWeaponRoll({ actor, weapon, attackIndex, skill, dataPreset
     
     let weaponExtraData: string | undefined;
     if (weapon.type === "melee weapon") {
-        weaponExtraData = (weapon as MeleeWeapon).getWeaponMessageData(attackIndex || 0);
+        weaponExtraData = await (weapon as MeleeWeapon).getWeaponMessageData(attackIndex || 0);
     } else {
-        weaponExtraData = (weapon as RangedWeapon).getWeaponMessageData();
+        weaponExtraData = await (weapon as RangedWeapon).getWeaponMessageData();
     }
 
     return skill.data.data.learning ? 

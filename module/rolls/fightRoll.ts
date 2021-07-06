@@ -34,7 +34,7 @@ export async function handleFightRoll({actor, type, itemId, attackIndex, positio
         if (!itemId) {
             return notifyError("No Item Specified", "Item id must be specified when rolling an attack with a weapon or spell");
         }
-        const item = actor.getOwnedItem(itemId) as BWItem;
+        const item = actor.items.get(itemId) as BWItem;
         if (!item) {
             return notifyError("Missing Item", `Item linked  - id ${itemId} - appears not to exist on the actor's sheet.`);
         }
@@ -45,7 +45,7 @@ export async function handleFightRoll({actor, type, itemId, attackIndex, positio
                 }
                 // handle melee attack at the given index.
                 const weapon = item as MeleeWeapon | RangedWeapon;
-                const weaponSkill = actor.getOwnedItem(item.data.data.skillId) as Skill;
+                const weaponSkill = actor.items.get<Skill>(weapon.data.data.skillId);
 
                 if (!weaponSkill) {
                     return notifyError("No Associated Skill", "In order for a skill test to be rolled, a weapon or spell has to be associated with a skill. Check the Actor's sheet to make sure the selected weapon has a chosen skill.");
@@ -53,7 +53,7 @@ export async function handleFightRoll({actor, type, itemId, attackIndex, positio
 
                 if (actor.data.type === "character") { 
                     return handleWeaponRoll({
-                        actor: (actor as BWActor & BWCharacter),
+                        actor: (actor as BWCharacter),
                         weapon,
                         skill: weaponSkill,
                         attackIndex,
@@ -61,7 +61,7 @@ export async function handleFightRoll({actor, type, itemId, attackIndex, positio
                     });
                 }
                 return handleNpcWeaponRoll({
-                    actor:  (actor as BWActor & Npc),
+                    actor:  (actor as Npc),
                     weapon,
                     skill: weaponSkill,
                     attackIndex,
@@ -69,13 +69,13 @@ export async function handleFightRoll({actor, type, itemId, attackIndex, positio
                 });
 
             case "spell":
-                const spell = actor.getOwnedItem(itemId) as Spell;
-                const skill = actor.getOwnedItem(spell?.data.data.skillId) as Skill;
+                const spell = actor.items.get(itemId) as Spell;
+                const skill = actor.items.get(spell?.data.data.skillId) as Skill;
                 if (actor.data.type === "character") {
-                    return handleSpellRoll({ actor: (actor as BWActor & BWCharacter), spell, skill, dataPreset});
+                    return handleSpellRoll({ actor: (actor as BWCharacter), spell, skill, dataPreset});
                 }
                 return handleNpcSpellRoll({
-                    actor: actor as BWActor & Npc, spell, skill, dataPreset
+                    actor: actor as Npc, spell, skill, dataPreset
                 });
             default:
                 throw Error(`Unexpected item type (${item.type}) passed to fight attack roll action`);

@@ -1,11 +1,10 @@
-import { BWActor } from "../actors/BWActor.js";
 import { BWItem, BWItemData, DisplayClass } from "./item.js";
 
-export class Relationship extends BWItem {
+export class Relationship extends BWItem<RelationshipDataRoot> {
     prepareData(): void {
         super.prepareData();
-        this.data.data.safeId = this._id;
-        if (this.actor) {
+        this.data.data.safeId = this.id;
+        if (this.actor && this.actor.data) {
             this.data.data.aptitude = this.actor.data.data.circles.exp || 0;
         }
 
@@ -17,16 +16,10 @@ export class Relationship extends BWItem {
             this.data.data.cssClass = "relationship-neutral";
         }
     }
-
-    get actor(): BWActor {
-        return super.actor as BWActor;
-    }
-
-    data: RelationshipDataRoot;
 }
 
-export interface RelationshipDataRoot extends BWItemData {
-    data: RelationshipData;
+export interface RelationshipDataRoot extends BWItemData<RelationshipData> {
+    type: "relationship";
 }
 
 export interface RelationshipData extends DisplayClass {

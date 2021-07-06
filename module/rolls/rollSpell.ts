@@ -1,4 +1,3 @@
-import { BWActor } from "../actors/BWActor.js";
 import { BWCharacter } from "../actors/BWCharacter.js";
 import { Skill } from "../items/skill.js";
 import { Spell } from "../items/spell.js";
@@ -9,18 +8,18 @@ import { handleSkillRoll } from "./rollSkill.js";
 import { showSpellTaxDialog } from "./rollSpellTax.js";
 
 export async function handleSpellRollEvent({ target, sheet, dataPreset }: EventHandlerOptions): Promise<unknown> {
-    const actor = sheet.actor as BWActor & BWCharacter;
+    const actor = sheet.actor as BWCharacter;
     const sorcerySkillId = target.dataset.skillId;
     if (!sorcerySkillId) {
         return helpers.notifyError("No Skill Specified",
             "A skill must be specified in order for the spell test to be rolled. Please pick from a list of sorcerous of the character.");
     }
-    const skill = actor.getOwnedItem(sorcerySkillId) as Skill;
+    const skill = actor.items.get(sorcerySkillId) as Skill;
     const spellId = target.dataset.spellId;
     if (!spellId) {
         throw Error("Malformed spell roll button. Must specify spell Id");
     }
-    const spell = sheet.actor.getOwnedItem(spellId) as Spell;
+    const spell = sheet.actor.items.get(spellId) as Spell;
     return handleSpellRoll({ actor, spell, skill, dataPreset });
 }
 
@@ -29,7 +28,7 @@ export async function handleSpellRoll({ actor, spell, skill, dataPreset }: Spell
         return helpers.notifyError("Missing Spell",
             "The spell being cast seems to be missing from the character sheet.");
     }
-    const spellData = spell.getSpellMessageData();
+    const spellData = await spell.getSpellMessageData();
 
     if (skill) {
         const obstacle = spell.data.data.variableObstacle ? 3 : spell.data.data.obstacle;
@@ -82,5 +81,5 @@ export async function handleSpellRoll({ actor, spell, skill, dataPreset }: Spell
 interface SpellRollOptions extends RollOptions {
     spell: Spell,
     skill: Skill,
-    actor: BWActor & BWCharacter;
+    actor: BWCharacter;
 }

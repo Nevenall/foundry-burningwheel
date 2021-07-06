@@ -1,26 +1,13 @@
-import { Common, DisplayProps, ClumsyWeightData, TracksTests, BWActorDataRoot, Ability, BWActor } from "./BWActor.js";
+import { DisplayProps, ClumsyWeightData, TracksTests, BWActorData, Ability, BWActor, Common } from "./BWActor.js";
 import { CharacterBurnerDialog } from "../dialogs/CharacterBurnerDialog.js";
 import { ShadeString, TestString, canAdvance, updateTestsNeeded, getWorstShadeString } from "../helpers.js";
 import { Skill } from "../items/skill.js";
-import { DifficultyDialog } from "../dialogs/DifficultyDialog.js";
 
-export class BWCharacter extends BWActor{
+export class BWCharacter extends BWActor<CharacterDataRoot> {
     data: CharacterDataRoot;
 
     prepareData(): void {
         super.prepareData();
-        if (!this.data.data.settings) {
-            this.data.data.settings = {
-                onlySuccessesCount: 'Faith, Resources, Perception',
-                showSettings: false,
-                roundUpHealth: false,
-                roundUpMortalWound: false,
-                roundUpReflexes: false,
-                armorTrained: false,
-                ignoreSuperficialWounds: false,
-                showBurner: false
-            };
-        }
 
         this._calculatePtgs();
 
@@ -169,7 +156,7 @@ export class BWCharacter extends BWActor{
         }
 
         // if the test should be tracked but we're doing deferred tracking do that now.
-        const difficultyDialog = game.burningwheel.gmDifficulty as DifficultyDialog | undefined;
+        const difficultyDialog = game.burningwheel.gmDifficulty;
         if (!force && difficultyDialog?.extendedTest) {
             difficultyDialog?.addDeferredTest({
                 actor: this,
@@ -208,7 +195,7 @@ export class BWCharacter extends BWActor{
             "data.deeds": this.data.data.deeds - deeds,
             "data.persona": this.data.data.persona - persona,
         });
-        const skill = this.getOwnedItem(skillId) as Skill;
+        const skill = this.items.get(skillId) as Skill;
         skill.update({
             "data.deeds": deeds ? (skill.data.data.deeds || 0) + 1 : undefined,
             "data.persona": skill.data.data.persona + persona
@@ -274,7 +261,7 @@ export class BWCharacter extends BWActor{
 
     taxResources(amount: number, maxFundLoss: number): void {
         const updateData = {};
-        let resourcesTax = parseInt(this.data.data.resourcesTax, 10) || 0;
+        let resourcesTax = parseInt(this.data.data.resourcesTax.toString()) || 0;
         const resourceExp = this.data.data.resources.exp || 0;
         const fundDice = this.data.data.funds || 0;
         if (amount <= maxFundLoss) {
@@ -306,7 +293,8 @@ export class BWCharacter extends BWActor{
                         ignore: {
                             label: "Ignore for now"
                         }
-                    }
+                    },
+                    default: "reduce"
                 }).render(true);
             }
         }
@@ -323,11 +311,11 @@ export class BWCharacter extends BWActor{
     }
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
-    _onCreate(data: any, options: any, userId: string, context: any): void {
+    _onCreate(data: any, options: any, userId: string): void {
         if (game.userId !== userId) {
             return;
         }
-        super._onCreate(data, options, userId, context);
+        super._onCreate(data, options, userId);
         setTimeout(() => {
             if (this.data.data.settings.showBurner) {
                 new Dialog({
@@ -349,15 +337,20 @@ export class BWCharacter extends BWActor{
                                 this.update({ "data.settings.showBurner": false });
                             }
                         }
-                    }
+                    },
+                    default: "yes"
                 }).render(true);
             }
         }, 500);
     }
+
+    async createEmbeddedDocuments(type: FoundryDocument.Types, data: Partial<FoundryDocument.Data>[], options?: FoundryDocument.ModificationContext): Promise<FoundryDocument[]> {
+        data = data.filter(i => i.type !== "lifepath");
+        return super.createEmbeddedDocuments(type, data, options);
+    }
 }
 
-export interface CharacterDataRoot extends BWActorDataRoot {
-    data: BWCharacterData;
+export interface CharacterDataRoot extends BWActorData<BWCharacterData> {
     type: "character"
 }
 

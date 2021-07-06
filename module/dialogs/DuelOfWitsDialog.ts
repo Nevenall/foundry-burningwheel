@@ -12,7 +12,7 @@ import { Skill, SkillDataRoot } from "../items/skill.js";
 import * as constants from "../constants.js";
 
 export class DuelOfWitsDialog extends ExtendedTestDialog<DuelOfWitsData> {
-    constructor(d: DialogData, o?: ApplicationOptions) {
+    constructor(d: Dialog.Data, o?: Dialog.Options) {
         super(d, o);
         
         this.data.actionOptions = options;
@@ -34,7 +34,7 @@ export class DuelOfWitsDialog extends ExtendedTestDialog<DuelOfWitsData> {
         actionOptions: StringIndexedObject<string[]>;
     };
 
-    static get defaultOptions(): FormApplicationOptions {
+    static get defaultOptions(): Dialog.Options {
         return mergeObject(super.defaultOptions, { width: 600, height: 600, resizable: true, classes: [ "bw-app" ] }, { overwrite: true });
     }
 
@@ -59,8 +59,8 @@ export class DuelOfWitsDialog extends ExtendedTestDialog<DuelOfWitsData> {
         if (target.dataset.skillId === "") {
             return;
         }
-        const actor = game.actors.entities.find(a => a._id === target.dataset.actorId) as BWActor;
-        const skill = actor?.getOwnedItem(target.dataset.skillId || "") as Skill | undefined;
+        const actor = game.actors?.contents.find(a => a.id === target.dataset.actorId) as BWActor;
+        const skill = actor?.items.get(target.dataset.skillId || "") as Skill | undefined;
 
         dataPreset.deedsPoint = actor.data.data.deeds !== 0;
         if (actor.data.data.persona) {
@@ -73,13 +73,13 @@ export class DuelOfWitsDialog extends ExtendedTestDialog<DuelOfWitsData> {
         if (actor?.data.type === "character") {
             if (skill.data.data.learning) {
                 handleLearningRoll({
-                    actor: (actor as BWActor & BWCharacter),
+                    actor: (actor as BWCharacter),
                     skill,
                     dataPreset
                 });
             } else {
                 handleSkillRoll({
-                    actor: (actor as BWActor & BWCharacter),
+                    actor: (actor as BWCharacter),
                     skill,
                     dataPreset
                 });
@@ -87,7 +87,7 @@ export class DuelOfWitsDialog extends ExtendedTestDialog<DuelOfWitsData> {
         } else {
             // handle roll as npc
             handleNpcSkillRoll({
-                actor: (actor as BWActor & Npc),
+                actor: (actor as Npc),
                 skill,
                 dataPreset
             });
@@ -95,22 +95,22 @@ export class DuelOfWitsDialog extends ExtendedTestDialog<DuelOfWitsData> {
     }
 
     getData(): DuelOfWitsData {
-        const data = super.getData();
-        const actors = game.actors.entities;
+        const data = super.getData() as DuelOfWitsData;
+        const actors = game.actors?.contents || [];
         data.actionOptions = this.data.actionOptions;
 
-        data.side1Options = actors.filter(a => a._id !== data.side2ActorId);
-        data.side2Options = actors.filter(a => a._id !== data.side1ActorId);
+        data.side1Options = actors.filter(a => a.id !== data.side2ActorId);
+        data.side2Options = actors.filter(a => a.id !== data.side1ActorId);
 
-        data.actor1 = actors.find(a => a._id === data.side1ActorId) as BWActor | undefined;
-        data.actor1Skills = (data.actor1?.data.socialSkills || []).map((s: SkillDataRoot & { _id: string }) => { return { id: s._id, label: s.name };});
-        data.actor2 = actors.find(a => a._id === data.side2ActorId) as BWActor | undefined;
-        data.actor2Skills = (data.actor2?.data.socialSkills || []).map((s: SkillDataRoot & { _id: string }) => { return { id: s._id, label: s.name };});
+        data.actor1 = actors.find(a => a.id === data.side1ActorId) as BWActor | undefined;
+        data.actor1Skills = (data.actor1?.data.socialSkills || []).map((s: SkillDataRoot ) => { return { id: s._id, label: s.name };});
+        data.actor2 = actors.find(a => a.id === data.side2ActorId) as BWActor | undefined;
+        data.actor2Skills = (data.actor2?.data.socialSkills || []).map((s: SkillDataRoot ) => { return { id: s._id, label: s.name };});
 
-        data.side1ReadOnly = !data.actor1 || !data.actor1.owner;
-        data.side2ReadOnly = !data.actor2 || !data.actor2.owner;
+        data.side1ReadOnly = !data.actor1 || !data.actor1.isOwner;
+        data.side2ReadOnly = !data.actor2 || !data.actor2.isOwner;
 
-        data.gmView = game.user.isGM;
+        data.gmView = game.user?.isGM || false;
 
         data.showS1Select = (data.gmView && !data.blindS1) || (!data.side1ReadOnly && !data.gmView);
         data.showS2Select = (data.gmView && !data.blindS2) || (!data.side2ReadOnly && !data.gmView);

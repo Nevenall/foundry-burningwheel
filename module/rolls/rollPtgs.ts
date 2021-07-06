@@ -79,7 +79,8 @@ async function handlePtgsRoll({ sheet, shrugging, dataPreset }: PtgsRollOptions)
         new Dialog({
             title: `${data.name} Test`,
             content: html,
-            buttons
+            buttons,
+            default: "roll"
         }).render(true)
     );
 }
@@ -115,7 +116,7 @@ async function ptgsRollCallback(
         fateReroll,
         callons
     };
-    sheet.actor.updateArthaForStat("resources", persona, deeds);
+    sheet.actor.updateArthaForStat("data.health", persona, deeds);
     if (isSuccessful) {
         const accessor = shrugging ? "data.ptgs.shrugging" : "data.ptgs.gritting";
         const updateData = {};

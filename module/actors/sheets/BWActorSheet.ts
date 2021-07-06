@@ -3,25 +3,31 @@ import { ArmorRootData } from "../../items/armor.js";
 import * as constants from "../../constants.js";
 import * as helpers from "../../helpers.js";
 import { BWItem } from "../../items/item.js";
+import { NpcData } from "../Npc.js";
+import { BWCharacterData } from "../BWCharacter.js";
 
-export class BWActorSheet extends ActorSheet {
+export class BWActorSheet<T extends BaseActorSheetData, A extends BWActor, O extends ActorSheetOptions> extends ActorSheet<T, A, O> {
     private _keyDownHandler = this._handleKeyPress.bind(this);
     private _keyUpHandler = this._handleKeyUp.bind(this);
-    get actor(): BWActor {
-        return super.actor as BWActor;
-    }
 
     get template(): string {
         const path = "systems/burningwheel/templates";
         return `${path}/${this.actor.data.type}-sheet.hbs`;
     }
 
-    options: ActorSheetOptions;
-
     static get defaultOptions(): ActorSheetOptions {
         return mergeObject(super.defaultOptions, {
             classes:  [ "bw-app" ]
         });
+    }
+
+    getData(_options?: Application.RenderOptions): T {
+        super.getData();
+        return {
+            actor: this.actor,
+            data: this.actor.data.data,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any;
     }
 
     activateListeners(html: JQuery): void {
@@ -34,7 +40,7 @@ export class BWActorSheet extends ActorSheet {
         if (this.options.draggableItemSelectors) {
             html.find(this.options.draggableItemSelectors.join('[draggable="true"], ')).on('dragstart', (e) => {
                 const actor = this.actor;
-                const item = actor.getOwnedItem(e.target.dataset.id || "") as BWItem;
+                const item = actor.items.get(e.target.dataset.id || "") as BWItem;
                 const dragData: helpers.ItemDragData = {
                     actorId: actor.id,
                     id: item.id,
@@ -52,7 +58,7 @@ export class BWActorSheet extends ActorSheet {
             html.find(this.options.draggableMeleeSelectors.join('[draggable="true"], ')).on('dragstart', (e) => {
                 const actor = this.actor;
                 const itemId = e.target.dataset.weaponId || "";
-                const weapon = actor.getOwnedItem(itemId) as Item;
+                const weapon = actor.items.get(itemId) as Item;
 
                 const dragData: helpers.MeleeDragData = {
                     actorId: actor.id,
@@ -74,7 +80,7 @@ export class BWActorSheet extends ActorSheet {
             html.find(this.options.draggableRangedSelectors.join('[draggable="true"], ')).on('dragstart', (e) => {
                 const actor = this.actor;
                 const itemId = e.target.dataset.weaponId || "";
-                const weapon = actor.getOwnedItem(itemId) as Item;
+                const weapon = actor.items.get(itemId) as Item;
 
                 const dragData: helpers.RangedDragData = {
                     actorId: actor.id,
@@ -158,14 +164,14 @@ export class BWActorSheet extends ActorSheet {
         const id = $(t).data("item-id");
         const binding = $(t).data("binding");
 
-        const item = this.actor.getOwnedItem(id);
+        const item = this.actor.items.get(id);
         const updateParams = {};
 
         updateParams[binding] = value;
         if (item) { item.update(updateParams, {}); }
     }
 
-    getArmorDictionary(armorItems: ItemData[]): { [key: string]: ItemData | null; } {
+    getArmorDictionary(armorItems: Item.Data[]): { [key: string]: Item.Data | null; } {
         let armorLocs: { [key: string]: ArmorRootData | null; } = {};
         constants.armorLocations.forEach(al => armorLocs[al] = null); // initialize locations
         armorItems.forEach(i =>
@@ -175,9 +181,14 @@ export class BWActorSheet extends ActorSheet {
     }
 }
 
-export interface ActorSheetOptions extends FormApplicationOptions {
+export interface ActorSheetOptions extends BaseEntitySheet.Options {
     draggableItemSelectors?: string[];
     draggableMeleeSelectors?: string[];
     draggableRangedSelectors?: string[];
     draggableStatSelectors?: string[];
+}
+
+export interface BaseActorSheetData<T extends NpcData | BWCharacterData = BWCharacterData> {
+    actor: BWActor;
+    data: T;
 }

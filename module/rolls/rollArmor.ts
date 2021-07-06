@@ -20,17 +20,17 @@ import { Armor } from "../items/armor.js";
 export async function handleArmorRollEvent({ target, sheet }: ArmorEventHandlerOptions): Promise<unknown> {
     const actor = sheet.actor;
     const armorId = target.dataset.itemId || "";
-    const armorItem = actor.getOwnedItem(armorId) as Armor;
+    const armorItem = actor.items.get<Armor>(armorId);
     const location = target.dataset.location || "";
     const chestBonus = location.toLowerCase() === "torso" ? 1 : 0;
-    const damage = armorItem.data.data[`damage${location}`];
+    const damage = armorItem?.data.data[`damage${location}`];
 
     const dialogData: ArmorDialogData = {
         difficulty: 1,
         name: "Armor",
         arthaDice: 0,
         bonusDice: 0,
-        armor: armorItem.data.data.dice + chestBonus,
+        armor: (armorItem?.data.data.dice || 0) + chestBonus,
         damage,
         showObstacles: true,
         showDifficulty: true,
@@ -43,10 +43,10 @@ export async function handleArmorRollEvent({ target, sheet }: ArmorEventHandlerO
         buttons: {
             roll: {
                 label: "Roll",
-                callback: (html: JQuery) => armorRollCallback(armorItem, html, sheet, location)
+                callback: (html: JQuery) => armorRollCallback(armorItem as Armor, html, sheet, location)
             }
-        }
-
+        },
+        default: "roll"
     }).render(true);
 
 }
@@ -55,7 +55,7 @@ export async function armorRollCallback(armorItem: Armor, html: JQuery, sheet: B
     const dice = extractNumber(html, "armor");
     const damage = parseInt(armorItem.data.data[`damage${location}`]);
     const va = extractNumber(html, "vsArmor");
-    const actor = armorItem.actor as BWActor;
+    const actor = armorItem.actor as unknown as BWActor;
     const baseData = extractBaseData(html, sheet);
     const dieSources: StringIndexedObject<string> = {
         Armor: `+${dice}`,
@@ -69,7 +69,7 @@ export async function armorRollCallback(armorItem: Armor, html: JQuery, sheet: B
     if (!roll) { return; }
     const damageAssigned = await armorItem.assignDamage(roll, location);
     const isSuccess = (roll.total || 0) >= 1 + va;
-    const rerollData = buildRerollData({ actor, roll, itemId: armorItem._id });
+    const rerollData = buildRerollData({ actor, roll, itemId: armorItem.id });
     rerollData.type = "armor";
     const messageData: RollChatMessageData = {
         name: "Armor",
@@ -92,7 +92,7 @@ export async function armorRollCallback(armorItem: Armor, html: JQuery, sheet: B
     const messageHtml = await renderTemplate(templates.armorMessage, messageData);
     return ChatMessage.create({
         content: messageHtml,
-        speaker: ChatMessage.getSpeaker({actor: armorItem.actor as BWActor})
+        speaker: ChatMessage.getSpeaker({actor: armorItem.actor as unknown as BWActor})
     });
 
 }
